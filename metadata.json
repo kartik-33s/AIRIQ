@@ -1,0 +1,6 @@
+{
+  "name": "AirIQ – Real-Time Air Quality Intelligence Platform",
+  "description": "Enterprise-grade real-time air quality intelligence platform with multi-API ground-station & modeled data (WAQI, OpenAQ, Open-Meteo), interactive Leaflet maps with heatmap layers, EPA & CPCB standards, anomaly detection, historical trends, forecasts, health recommendations, and AI assistant.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
