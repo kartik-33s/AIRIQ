@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Map, TrendingUp, Calendar, Layers, HeartPulse } from 'lucide-react';
+import { BarChart3, Map, TrendingUp, Calendar, Layers, HeartPulse, Box } from 'lucide-react';
 import { ActiveTab } from '../types/aqi';
 
 interface BottomNavProps {
@@ -10,6 +10,7 @@ interface BottomNavProps {
 export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab }) => {
   const tabs: { id: ActiveTab; label: string; icon: React.FC<{ className?: string }> }[] = [
     { id: 'dashboard', label: 'Live', icon: BarChart3 },
+    { id: '3d', label: '3D Twin', icon: Box },
     { id: 'map', label: 'Map', icon: Map },
     { id: 'history', label: 'History', icon: TrendingUp },
     { id: 'forecast', label: 'Forecast', icon: Calendar },

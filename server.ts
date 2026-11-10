@@ -671,6 +671,212 @@ app.get('/api/aqi/uv', async (req: Request, res: Response) => {
 });
 
 // ==========================================
+// 2.7 Animated Wind Field & Transboundary Dispersion Endpoint
+// ==========================================
+app.get('/api/aqi/dispersion', async (req: Request, res: Response) => {
+  const lat = parseFloat(req.query.lat as string);
+  const lng = parseFloat(req.query.lng as string);
+
+  if (isNaN(lat) || isNaN(lng)) {
+    return res.status(400).json({ error: 'Valid latitude and longitude required' });
+  }
+
+  const cacheKey = `dispersion:${lat.toFixed(2)},${lng.toFixed(2)}`;
+  const cached = getCached<unknown>(cacheKey);
+  if (cached) return res.json(cached);
+
+  try {
+    // Generate a 3x3 sampling grid covering ~80km around the center
+    const offsets = [-0.35, 0, 0.35];
+    const gridCoords: Array<{ lat: number; lng: number }> = [];
+    for (const dy of offsets) {
+      for (const dx of offsets) {
+        gridCoords.push({
+          lat: parseFloat((lat + dy).toFixed(3)),
+          lng: parseFloat((lng + dx).toFixed(3)),
+        });
+      }
+    }
+
+    const latsParam = gridCoords.map((c) => c.lat).join(',');
+    const lngsParam = gridCoords.map((c) => c.lng).join(',');
+
+    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latsParam}&longitude=${lngsParam}&current=wind_speed_10m,wind_direction_10m,wind_gusts_10m`;
+    const aqUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&current=pm2_5,pm10,dust,aerosol_optical_depth`;
+
+    const [weatherResp, aqResp] = await Promise.allSettled([
+      fetch(weatherUrl),
+      fetch(aqUrl),
+    ]);
+
+    const weatherData = weatherResp.status === 'fulfilled' ? await weatherResp.value.json() : null;
+    const aqData = aqResp.status === 'fulfilled' ? await aqResp.value.json() : null;
+
+    // Process 9-point grid
+    const grid: Array<{
+      lat: number;
+      lng: number;
+      windSpeed: number;
+      windDirection: number;
+      windGusts: number;
+    }> = [];
+
+    let centerWindSpeed = 5.0;
+    let centerWindDirection = 315;
+    let centerWindGusts = 8.0;
+
+    if (Array.isArray(weatherData)) {
+      weatherData.forEach((pt, idx) => {
+        const c = pt.current || {};
+        const speed = typeof c.wind_speed_10m === 'number' ? Math.round(c.wind_speed_10m * 10) / 10 : 5.0;
+        const dir = typeof c.wind_direction_10m === 'number' ? Math.round(c.wind_direction_10m) : 315;
+        const gusts = typeof c.wind_gusts_10m === 'number' ? Math.round(c.wind_gusts_10m * 10) / 10 : speed * 1.5;
+
+        grid.push({
+          lat: gridCoords[idx]?.lat || pt.latitude,
+          lng: gridCoords[idx]?.lng || pt.longitude,
+          windSpeed: speed,
+          windDirection: dir,
+          windGusts: gusts,
+        });
+
+        // Center point is index 4 (0-based)
+        if (idx === 4) {
+          centerWindSpeed = speed;
+          centerWindDirection = dir;
+          centerWindGusts = gusts;
+        }
+      });
+    } else if (weatherData?.current) {
+      centerWindSpeed = weatherData.current.wind_speed_10m || 5.0;
+      centerWindDirection = weatherData.current.wind_direction_10m || 315;
+      centerWindGusts = weatherData.current.wind_gusts_10m || 8.0;
+      grid.push({
+        lat,
+        lng,
+        windSpeed: centerWindSpeed,
+        windDirection: centerWindDirection,
+        windGusts: centerWindGusts,
+      });
+    }
+
+    // Determine cardinal direction (direction wind is blowing FROM)
+    const CARDINALS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+    const cardinalIdx = Math.round(centerWindDirection / 22.5) % 16;
+    const cardinal = CARDINALS[cardinalIdx];
+
+    const dust = aqData?.current?.dust !== undefined ? Math.round(aqData.current.dust * 10) / 10 : null;
+    const aod = aqData?.current?.aerosol_optical_depth !== undefined ? Math.round(aqData.current.aerosol_optical_depth * 100) / 100 : null;
+    const pm25 = aqData?.current?.pm2_5 !== undefined ? Math.round(aqData.current.pm2_5 * 10) / 10 : null;
+
+    // Transboundary origin analysis logic
+    let originTitle = `${cardinal} Atmospheric Vector Flow`;
+    let originDesc = `Current wind vector indicates atmospheric airflow arriving from the ${cardinal} (${centerWindDirection}°), providing baseline dispersion for local emissions.`;
+    let sourceRegion = `Upwind ${cardinal} Quadrant`;
+    let flowType: 'continental_smoke' | 'maritime_clear' | 'desert_dust' | 'stagnant_inversion' | 'standard_dispersion' = 'standard_dispersion';
+
+    const isDelhiNCR = Math.abs(lat - 28.6) < 2.0 && Math.abs(lng - 77.2) < 2.0;
+    const isMumbaiCoast = Math.abs(lat - 19.0) < 1.5 && Math.abs(lng - 72.8) < 1.5;
+    const isSydney = Math.abs(lat - (-33.8)) < 1.5 && Math.abs(lng - 151.2) < 1.5;
+
+    if (isDelhiNCR) {
+      if (centerWindDirection >= 280 && centerWindDirection <= 350) {
+        originTitle = 'Northwest Agricultural Stubble Smoke Corridor';
+        sourceRegion = 'Punjab & Haryana Agricultural Biomass Belt';
+        originDesc = 'Active northwesterly wind corridor is directly advecting crop residue burning (parali) plumes and biomass smoke southeastward into the Delhi NCR basin, exacerbating particulate haze.';
+        flowType = 'continental_smoke';
+      } else if (centerWindDirection >= 80 && centerWindDirection <= 160) {
+        originTitle = 'Humid Gangetic Moisture & Inversion Drift';
+        sourceRegion = 'Indo-Gangetic Plains (UP / Bihar)';
+        originDesc = 'Southeasterly winds are transporting humid, slow-moving boundary layer air from the Gangetic plains, causing thermal inversion trapping and delayed dispersion.';
+        flowType = 'stagnant_inversion';
+      } else if (centerWindDirection >= 210 && centerWindDirection <= 275) {
+        originTitle = 'Western Arid Desert Dust Transport';
+        sourceRegion = 'Thar Desert & Western Plains';
+        originDesc = 'Southwesterly to westerly flow carries mineral dust aerosols from arid regions, elevating coarse particulate (PM10) fractions.';
+        flowType = 'desert_dust';
+      }
+    } else if (isMumbaiCoast || isSydney) {
+      const isOnshore = isMumbaiCoast ? (centerWindDirection >= 220 && centerWindDirection <= 320) : (centerWindDirection >= 45 && centerWindDirection <= 160);
+      if (isOnshore) {
+        originTitle = 'Clean Marine Boundary Layer Inflow';
+        sourceRegion = 'Maritime Ocean Basin';
+        originDesc = 'Clean oceanic air mass is actively ventilating the coastal urban corridor, flushing inland stagnant vehicular exhaust and improving ambient coastal air quality.';
+        flowType = 'maritime_clear';
+      } else {
+        originTitle = 'Offshore Continental Land Breeze';
+        sourceRegion = 'Inland Urban/Industrial Core';
+        originDesc = 'Continental air flow carrying urban vehicular and industrial emissions out across the coastal shelf.';
+        flowType = 'standard_dispersion';
+      }
+    } else {
+      if (centerWindSpeed < 3.5) {
+        originTitle = 'Boundary Layer Inversion & Stagnation Trap';
+        sourceRegion = 'Localized Surface Trapping';
+        originDesc = 'Near-calm wind velocities inhibit horizontal advection. Atmospheric boundary layer traps emissions close to the surface, creating localized pollution hotspots.';
+        flowType = 'stagnant_inversion';
+      } else if (centerWindSpeed >= 18) {
+        originTitle = 'High-Velocity Turbulent Ventilation';
+        sourceRegion = 'Regional Advective Airflow';
+        originDesc = 'Vigorous wind mixing is actively diluting atmospheric particulate matter and flushing ground-level pollution.';
+        flowType = 'standard_dispersion';
+      }
+    }
+
+    // Ventilation score: 0 (Dead calm, stagnant) to 100 (Optimal clean air flushing)
+    let ventScore = Math.min(100, Math.max(10, Math.round(centerWindSpeed * 5.5)));
+    let ventStatus: 'Stagnant Trap' | 'Moderate Dispersion' | 'Strong Ventilation' = 'Moderate Dispersion';
+    let ventRisk: 'Severe Risk' | 'Caution' | 'Favorable' = 'Caution';
+    let ventAdvice = 'Moderate atmospheric mixing. Particulates disperse at a normal rate.';
+
+    if (centerWindSpeed < 3.5) {
+      ventStatus = 'Stagnant Trap';
+      ventRisk = 'Severe Risk';
+      ventScore = Math.max(8, Math.round(centerWindSpeed * 4));
+      ventAdvice = 'High accumulation risk: Stagnant winds trap vehicle and industrial exhaust close to the ground.';
+    } else if (centerWindSpeed >= 12.0) {
+      ventStatus = 'Strong Ventilation';
+      ventRisk = 'Favorable';
+      ventScore = Math.min(100, Math.round(50 + centerWindSpeed * 2.5));
+      ventAdvice = 'High ventilation: Fresh air currents are rapidly dispersing and diluting stagnant smog.';
+    }
+
+    const payload = {
+      center: {
+        lat,
+        lng,
+        windSpeed: centerWindSpeed,
+        windDirection: centerWindDirection,
+        windGusts: centerWindGusts,
+        dust,
+        aod,
+        pm25,
+      },
+      grid,
+      cardinal,
+      originAnalysis: {
+        title: originTitle,
+        description: originDesc,
+        sourceRegion,
+        flowType,
+      },
+      ventilation: {
+        status: ventStatus,
+        score: ventScore,
+        riskLevel: ventRisk,
+        advice: ventAdvice,
+      },
+    };
+
+    setCache(cacheKey, payload, 10 * 60 * 1000);
+    res.json(payload);
+  } catch (err: unknown) {
+    const error = err as Error;
+    res.status(500).json({ error: 'Failed to retrieve dispersion telemetry', details: error.message });
+  }
+});
+
+// ==========================================
 // 3. Map Bounds Station Markers
 // ==========================================
 app.get('/api/aqi/map-bounds', async (req: Request, res: Response) => {
@@ -1283,7 +1489,10 @@ async function startServer() {
     });
   } else {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: false,
+      },
       appType: 'spa',
     });
     app.use(vite.middlewares);

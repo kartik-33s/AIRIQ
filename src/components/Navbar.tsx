@@ -11,6 +11,7 @@ import {
   Share2,
   RefreshCw,
   Compass,
+  Box,
 } from 'lucide-react';
 import { ActiveTab, AqiStandard, LocationData } from '../types/aqi';
 
@@ -94,6 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navItems: { id: ActiveTab; label: string; icon: string }[] = [
     { id: 'dashboard', label: 'Live Dashboard', icon: 'BarChart3' },
+    { id: '3d', label: '3D Atmosphere', icon: 'Box' },
     { id: 'map', label: 'Interactive Map', icon: 'Map' },
     { id: 'history', label: 'History & Spikes', icon: 'TrendingUp' },
     { id: 'forecast', label: 'AQI Forecast', icon: 'Calendar' },
@@ -286,13 +288,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 ${
                   isActive
                     ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
                     : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800 hover:bg-slate-900/40'
                 }`}
               >
-                {item.label}
+                {item.id === '3d' && <Box className="w-3.5 h-3.5 text-sky-400" />}
+                <span>{item.label}</span>
+                {item.id === '3d' && (
+                  <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-sky-500/20 text-sky-300 font-bold tracking-wider">
+                    NEW
+                  </span>
+                )}
               </button>
             );
           })}

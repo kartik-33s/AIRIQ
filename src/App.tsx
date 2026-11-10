@@ -9,6 +9,7 @@ import { HistoryView } from './views/HistoryView';
 import { ForecastView } from './views/ForecastView';
 import { ComparisonView } from './views/ComparisonView';
 import { HealthView } from './views/HealthView';
+import { Atmospheric3DView } from './views/Atmospheric3DView';
 import { AiAssistantModal } from './components/AiAssistantModal';
 import { SmartAlertsModal } from './components/SmartAlertsModal';
 import { ReportModal } from './components/ReportModal';
@@ -284,6 +285,7 @@ export default function App() {
             onUseCurrentLocation={handleUseCurrentLocation}
             onOpenAiAssistant={() => setIsAiOpen(true)}
             onNavigateToMap={() => setActiveTab('map')}
+            onNavigateTo3D={() => setActiveTab('3d')}
           />
         )}
 
@@ -296,6 +298,16 @@ export default function App() {
               setActiveTab('dashboard');
             }}
             onUseCurrentLocation={handleUseCurrentLocation}
+          />
+        )}
+
+        {activeTab === '3d' && (
+          <Atmospheric3DView
+            currentLocation={locationData}
+            standard={standard}
+            onSelectCity={(city) => fetchLiveAqi({ city })}
+            onUseCurrentLocation={handleUseCurrentLocation}
+            isLocating={isLocating}
           />
         )}
 
@@ -316,8 +328,8 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <Footer />
+      {/* Footer (hidden on 3D full-bleed viewport) */}
+      {activeTab !== '3d' && <Footer />}
 
       {/* Mobile Bottom Navigation */}
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />

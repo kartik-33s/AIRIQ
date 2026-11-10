@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>
       (function() {
+        // Theme initialization
         try {
           var t = localStorage.getItem('airiq_theme');
           if (t === 'light' || (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)) {
@@ -15,12 +16,54 @@
             document.documentElement.classList.add('dark');
           }
         } catch (e) {}
+
+        // Mock Vite HMR WebSocket in preview iframe/cloud proxy environment to silence failed connect errors
+        var NativeWebSocket = window.WebSocket;
+        if (NativeWebSocket) {
+          window.WebSocket = function(url, protocols) {
+            var protoStr = Array.isArray(protocols) ? protocols.join(' ') : String(protocols || '');
+            if (protoStr.indexOf('vite') !== -1 || (typeof url === 'string' && (url.indexOf('token=') !== -1 || url.indexOf('vite') !== -1))) {
+              var emitter = new EventTarget();
+              emitter.binaryType = 'blob';
+              emitter.readyState = 1; // WebSocket.OPEN
+              emitter.url = url;
+              emitter.protocol = protoStr;
+              emitter.extensions = '';
+              emitter.bufferedAmount = 0;
+              emitter.send = function() {};
+              emitter.close = function() {};
+              setTimeout(function() {
+                try {
+                  emitter.dispatchEvent(new Event('open'));
+                } catch (err) {}
+              }, 10);
+              return emitter;
+            }
+            return new NativeWebSocket(url, protocols);
+          };
+          window.WebSocket.prototype = NativeWebSocket.prototype;
+          window.WebSocket.CONNECTING = 0;
+          window.WebSocket.OPEN = 1;
+          window.WebSocket.CLOSING = 2;
+          window.WebSocket.CLOSED = 3;
+        }
+
+        // Suppress any remaining Vite dev server WebSocket connection rejections in preview / iframe environments
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event && event.reason) {
+            var msg = String(event.reason.message || event.reason);
+            if (msg.indexOf('WebSocket') !== -1 || msg.indexOf('websocket') !== -1) {
+              event.preventDefault();
+              if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+            }
+          }
+        }, true);
       })();
     </script>
     <title>AirIQ – Real-Time Air Quality Intelligence Platform</title>
-    <meta name="description" content="Enterprise-grade real-time air quality intelligence platform with multi-API ground-station & modeled data (WAQI, OpenAQ, Open-Meteo), interactive Leaflet maps with heatmap layers, EPA & CPCB standards, anomaly detection, historical trends, forecasts, health recommendations, and AI assistant." />
+    <meta name="description" content="Enterprise-grade real-time air quality intelligence platform with multi-API ground-station & modeled data (WAQI, OpenAQ, Open-Meteo), Three.js 3D atmospheric digital twin and particulate dispersion simulation, interactive Leaflet maps with heatmap layers, EPA & CPCB standards, anomaly detection, historical trends, forecasts, health recommendations, and AI assistant." />
     <meta property="og:title" content="AirIQ – Real-Time Air Quality Intelligence Platform" />
-    <meta property="og:description" content="Enterprise-grade real-time air quality intelligence platform with multi-API ground-station & modeled data, interactive Leaflet maps, and predictive insights." />
+    <meta property="og:description" content="Enterprise-grade real-time air quality intelligence platform with multi-API ground-station & modeled data, Three.js 3D atmospheric twin, interactive Leaflet maps, and predictive insights." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />

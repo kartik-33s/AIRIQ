@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import {
   Layers,
@@ -11,9 +11,13 @@ import {
   ArrowRight,
   ShieldCheck,
   MapPin,
+  Wind,
+  CloudRain,
 } from 'lucide-react';
-import { MapStation, AqiStandard, LocationData } from '../types/aqi';
+import { MapStation, AqiStandard, LocationData, WindDispersionData } from '../types/aqi';
 import { getAqiCategory } from '../lib/aqi';
+import { WindDispersionOverlay } from '../components/WindDispersionOverlay';
+import { WindDispersionHud } from '../components/WindDispersionHud';
 
 interface MapViewProps {
   currentLocation: LocationData | null;
@@ -34,6 +38,7 @@ export const MapView: React.FC<MapViewProps> = ({
   const heatmapLayerRef = useRef<L.LayerGroup | null>(null);
   const hotspotLayerRef = useRef<L.LayerGroup | null>(null);
 
+  const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
   const [stations, setStations] = useState<MapStation[]>([]);
   const [loading, setLoading] = useState(false);
   const [showStations, setShowStations] = useState(true);
@@ -42,9 +47,30 @@ export const MapView: React.FC<MapViewProps> = ({
   const [selectedStation, setSelectedStation] = useState<MapStation | null>(null);
   const [mapSearch, setMapSearch] = useState('');
 
+  // Wind Vector & Smoke Dispersion states
+  const [dispersionData, setDispersionData] = useState<WindDispersionData | null>(null);
+  const [loadingDispersion, setLoadingDispersion] = useState(false);
+  const [showWindParticles, setShowWindParticles] = useState(true);
+  const [showSmokeMode, setShowSmokeMode] = useState(false);
+  const [showVectorArrows, setShowVectorArrows] = useState(true);
+
   // Default center
   const initialLat = currentLocation?.coordinates.lat || 28.6139;
   const initialLng = currentLocation?.coordinates.lng || 77.209;
+
+  // Fetch real-time wind vectors & transboundary dispersion metrics from server
+  const fetchDispersionData = useCallback((lat: number, lng: number) => {
+    setLoadingDispersion(true);
+    fetch(`/api/aqi/dispersion?lat=${lat}&lng=${lng}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && data.center) {
+          setDispersionData(data);
+        }
+        setLoadingDispersion(false);
+      })
+      .catch(() => setLoadingDispersion(false));
+  }, []);
 
   // Initialize Leaflet Map
   useEffect(() => {
@@ -71,12 +97,17 @@ export const MapView: React.FC<MapViewProps> = ({
     hotspotLayerRef.current = L.layerGroup().addTo(map);
 
     mapInstanceRef.current = map;
+    setMapInstance(map);
 
-    // Load bounds on move end
+    // Load bounds & dispersion telemetry on move end
     const fetchBoundsStations = () => {
       const bounds = map.getBounds();
       const sw = bounds.getSouthWest();
       const ne = bounds.getNorthEast();
+      const center = map.getCenter();
+
+      // Trigger wind & dispersion telemetry update for the viewport center
+      fetchDispersionData(center.lat, center.lng);
 
       setLoading(true);
       fetch(`/api/aqi/map-bounds?lat1=${sw.lat}&lng1=${sw.lng}&lat2=${ne.lat}&lng2=${ne.lng}`)
@@ -97,8 +128,9 @@ export const MapView: React.FC<MapViewProps> = ({
     return () => {
       map.remove();
       mapInstanceRef.current = null;
+      setMapInstance(null);
     };
-  }, []);
+  }, [initialLat, initialLng, fetchDispersionData]);
 
   // Center map if location changes externally
   useEffect(() => {
@@ -108,8 +140,9 @@ export const MapView: React.FC<MapViewProps> = ({
         11,
         { animate: true }
       );
+      fetchDispersionData(currentLocation.coordinates.lat, currentLocation.coordinates.lng);
     }
-  }, [currentLocation?.coordinates.lat, currentLocation?.coordinates.lng]);
+  }, [currentLocation?.coordinates.lat, currentLocation?.coordinates.lng, fetchDispersionData]);
 
   // Update map markers when stations or layer toggles change
   useEffect(() => {
@@ -259,6 +292,12 @@ export const MapView: React.FC<MapViewProps> = ({
     }
   };
 
+  // Handle corridor preset jump
+  const handleSelectPreset = (lat: number, lng: number, _name: string) => {
+    mapInstanceRef.current?.setView([lat, lng], 11, { animate: true });
+    fetchDispersionData(lat, lng);
+  };
+
   // Top polluted stations nearby
   const sortedPolluted = [...stations].sort((a, b) => b.aqi - a.aqi).slice(0, 4);
   // Cleanest stations nearby
@@ -292,7 +331,7 @@ export const MapView: React.FC<MapViewProps> = ({
         </form>
 
         {/* Layer Toggles & Refresh Status */}
-        <div className="pointer-events-auto flex items-center gap-2 bg-slate-900/90 light:bg-white/95 backdrop-blur-md rounded-xl border border-slate-700/80 light:border-slate-300 shadow-xl px-3 py-1.5 text-xs text-slate-300 light:text-slate-700">
+        <div className="pointer-events-auto flex items-center gap-2 bg-slate-900/90 light:bg-white/95 backdrop-blur-md rounded-xl border border-slate-700/80 light:border-slate-300 shadow-xl px-3 py-1.5 text-xs text-slate-300 light:text-slate-700 flex-wrap">
           <button
             onClick={() => setShowStations(!showStations)}
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors ${
@@ -320,12 +359,43 @@ export const MapView: React.FC<MapViewProps> = ({
             <Flame className="w-3.5 h-3.5" /> Hotspots
           </button>
 
+          <span className="w-px h-4 bg-slate-700 light:bg-slate-300 mx-0.5 hidden sm:inline-block" />
+
+          <button
+            onClick={() => setShowWindParticles(!showWindParticles)}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors ${
+              showWindParticles ? 'bg-sky-500/25 text-sky-400 font-semibold border border-sky-500/30' : 'text-slate-400'
+            }`}
+            title="Toggle Animated Wind Streamlines"
+          >
+            <Wind className="w-3.5 h-3.5" /> Wind Streamlines
+          </button>
+
+          <button
+            onClick={() => setShowSmokeMode(!showSmokeMode)}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors ${
+              showSmokeMode ? 'bg-amber-500/25 text-amber-400 font-semibold border border-amber-500/30' : 'text-slate-400'
+            }`}
+            title="Toggle Transboundary Smoke Dispersion"
+          >
+            <Flame className="w-3.5 h-3.5 text-amber-400" /> Smoke Plumes
+          </button>
+
           {loading && <RefreshCw className="w-3.5 h-3.5 animate-spin text-sky-400 ml-1" />}
         </div>
       </div>
 
       {/* Main Leaflet Map Viewport */}
       <div ref={mapContainerRef} className="w-full h-full z-0 bg-slate-950" />
+
+      {/* Wind Particles & Smoke Dispersion Layer */}
+      <WindDispersionOverlay
+        map={mapInstance}
+        active={showWindParticles || showSmokeMode}
+        showSmoke={showSmokeMode}
+        showVectors={showVectorArrows}
+        data={dispersionData}
+      />
 
       {/* Floating Map Legend (Bottom Left) */}
       <div className="absolute bottom-6 left-4 z-[1000] hidden sm:block bg-slate-950/85 light:bg-white/90 backdrop-blur-md p-3 rounded-xl border border-slate-800 light:border-slate-300 text-xs shadow-lg space-y-1.5">
@@ -474,6 +544,20 @@ export const MapView: React.FC<MapViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Interactive Wind Vector & Smoke Dispersion HUD */}
+      <WindDispersionHud
+        data={dispersionData}
+        loading={loadingDispersion}
+        showWindParticles={showWindParticles}
+        onToggleWindParticles={() => setShowWindParticles((prev) => !prev)}
+        showSmokeMode={showSmokeMode}
+        onToggleSmokeMode={() => setShowSmokeMode((prev) => !prev)}
+        showVectorArrows={showVectorArrows}
+        onToggleVectorArrows={() => setShowVectorArrows((prev) => !prev)}
+        onSelectPreset={handleSelectPreset}
+        activeCityName={currentLocation?.city || 'Selected Region'}
+      />
     </div>
   );
 };

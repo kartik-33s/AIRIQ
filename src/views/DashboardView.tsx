@@ -12,6 +12,7 @@ import {
   Info,
   ChevronDown,
   ChevronUp,
+  Box,
 } from 'lucide-react';
 import { LocationData, AqiStandard } from '../types/aqi';
 import { getAqiCategory, formatRelativeTime } from '../lib/aqi';
@@ -33,6 +34,7 @@ interface DashboardViewProps {
   isLocating?: boolean;
   onOpenAiAssistant: () => void;
   onNavigateToMap: () => void;
+  onNavigateTo3D?: () => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -47,6 +49,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   isLocating,
   onOpenAiAssistant,
   onNavigateToMap,
+  onNavigateTo3D,
 }) => {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [aiInsight, setAiInsight] = useState<string>('');
@@ -232,6 +235,36 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           Consult AI <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
+
+      {/* 3D Atmospheric Digital Twin Launcher Banner */}
+      {onNavigateTo3D && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-950/40 via-cyan-950/30 to-indigo-950/40 light:from-sky-50 light:to-indigo-50 border border-sky-500/30 light:border-sky-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg shadow-sky-950/20">
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 rounded-xl bg-sky-500/20 text-sky-400 flex-shrink-0 mt-0.5 border border-sky-500/30">
+              <Box className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400 light:text-sky-600">
+                  Three.js 3D Atmospheric Digital Twin
+                </h4>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-mono font-bold">
+                  INTERACTIVE
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 light:text-slate-700 mt-1 leading-relaxed">
+                Experience real-time particulate dispersion, 10-part procedural sensor station with exploded telemetry, dynamic solar azimuth, and city-scale smog depth.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onNavigateTo3D}
+            className="self-end sm:self-center px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-xs flex items-center gap-2 flex-shrink-0 transition-all shadow-md shadow-sky-500/25 active:scale-95"
+          >
+            Launch 3D Scene <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* 1000+ vs 500 Scale & Live Model Transparency Accordion */}
       <div className="rounded-2xl border border-sky-500/20 bg-sky-950/20 light:bg-sky-50/70 p-4 transition-all">
