@@ -161,22 +161,5 @@ npm start
 
 ---
 
-## 🎬 2-3 Minute Demo Video Script
-
-- **[0:00 - 0:25] Introduction & Live Dashboard**:
-  "Welcome to AirIQ, an enterprise-grade real-time air quality intelligence platform. On the live dashboard, notice how New Delhi is loaded with a 'Measured' badge from authentic WAQI ground stations. Watch as we toggle between the US EPA standard and the Indian CPCB standard—the radial gauge and category classifications update instantaneously."
-
-- **[0:25 - 0:50] Search & Autocomplete**:
-  "Let's search for 'London' in the autocomplete bar. AirIQ resolves coordinates instantly, updating the 6 monitored pollutants—PM2.5, PM10, NO2, SO2, CO, and O3—with individual WHO guideline comparison bars."
-
-- **[0:50 - 1:15] Interactive Air Quality Map**:
-  "Switching to the Interactive Map view, you see a full-screen Leaflet map displaying colored AQI badges. Notice the layer controls: we can toggle station pins, intensity heatmaps, and high-pollution hotspots with pulsing beacons. Clicking any station opens an immediate detail drawer with coordinates and attribution."
-
-- **[1:15 - 1:40] Historical Pollution Tracker & Anomaly Spike Detection**:
-  "In the History tab, AirIQ loads up to 90 days of atmospheric data. Our built-in anomaly detection algorithm flags days exceeding the rolling mean plus two standard deviations, highlighting them as red pulsating spikes. Users can inspect the exact deviation multiplier and atmospheric cause."
-
-- **[1:40 - 2:05] Multi-City Comparison & Clean Air Winner**:
-  "On the Compare page, we analyze Delhi, London, and Shimla side-by-side. AirIQ calculates the differential impact—Delhi is 3.1x higher AQI—and awards the 'Relatively Cleaner Air Winner' badge to Shimla with overlaid 7-day trend trajectories."
-
 - **[2:05 - 2:30] Health Guidance, AI Assistant & Card Sharing**:
   "Under Health & Safety, dynamic recommendations adapt to current pollution levels, specifying mask guidance and sensitive group advisories. Users can open the Gemini AI Assistant for personalized guidance with voice input, configure Smart AQI threshold notifications, and export a branded PNG share card or printable PDF impact report."
