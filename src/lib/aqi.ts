@@ -511,3 +511,95 @@ export function formatRelativeTime(timestamp: string | number | Date): string {
   const diffDays = Math.floor(diffHour / 24);
   return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
 }
+
+export interface UvCategoryInfo {
+  name: 'Low' | 'Moderate' | 'High' | 'Very High' | 'Extreme';
+  color: string;
+  bgColor: string;
+  textColor: string;
+  burnTimeMinutes: number;
+  generalAdvice: string;
+  spfRecommendation: string;
+  riskLevel: 'Minimal' | 'Moderate' | 'Significant' | 'Severe' | 'Critical';
+}
+
+/**
+ * Returns WHO/EPA standard UV Index category, color, estimated skin burn time, and sun protection guidelines.
+ */
+export function getUvCategoryInfo(uvIndex: number, isDay = true): UvCategoryInfo {
+  if (!isDay || uvIndex < 0.1) {
+    return {
+      name: 'Low',
+      color: '#10b981',
+      bgColor: 'rgba(16, 185, 129, 0.15)',
+      textColor: '#34d399',
+      burnTimeMinutes: 120,
+      generalAdvice: 'Zero solar UV radiation detected. No sun protection required.',
+      spfRecommendation: 'None needed',
+      riskLevel: 'Minimal',
+    };
+  }
+
+  if (uvIndex < 3.0) {
+    return {
+      name: 'Low',
+      color: '#10b981',
+      bgColor: 'rgba(16, 185, 129, 0.15)',
+      textColor: '#34d399',
+      burnTimeMinutes: 60,
+      generalAdvice: 'Minimal sun hazard. Safe to enjoy normal outdoor activities.',
+      spfRecommendation: 'SPF 15+ for extended snow/water exposure',
+      riskLevel: 'Minimal',
+    };
+  }
+
+  if (uvIndex < 6.0) {
+    return {
+      name: 'Moderate',
+      color: '#eab308',
+      bgColor: 'rgba(234, 179, 8, 0.15)',
+      textColor: '#facc15',
+      burnTimeMinutes: 40,
+      generalAdvice: 'Protection needed. Seek shade during midday peak. Wear sunglasses & wide hat.',
+      spfRecommendation: 'SPF 30+ broad spectrum',
+      riskLevel: 'Moderate',
+    };
+  }
+
+  if (uvIndex < 8.0) {
+    return {
+      name: 'High',
+      color: '#f97316',
+      bgColor: 'rgba(249, 115, 22, 0.15)',
+      textColor: '#fb923c',
+      burnTimeMinutes: 20,
+      generalAdvice: 'High risk of harm. Reduce midday sun exposure between 11 AM and 3 PM.',
+      spfRecommendation: 'SPF 30+ to 50+ with reapplication every 2 hours',
+      riskLevel: 'Significant',
+    };
+  }
+
+  if (uvIndex < 11.0) {
+    return {
+      name: 'Very High',
+      color: '#ef4444',
+      bgColor: 'rgba(239, 68, 68, 0.15)',
+      textColor: '#f87171',
+      burnTimeMinutes: 12,
+      generalAdvice: 'Extra protection essential. Unprotected skin and eyes can burn rapidly.',
+      spfRecommendation: 'SPF 50+ mandatory, UV400 eyewear & protective shirt',
+      riskLevel: 'Severe',
+    };
+  }
+
+  return {
+    name: 'Extreme',
+    color: '#a855f7',
+    bgColor: 'rgba(168, 85, 247, 0.15)',
+    textColor: '#c084fc',
+    burnTimeMinutes: 8,
+    generalAdvice: 'Extreme danger. Avoid outdoor exposure during midday hours. Skin burns in minutes.',
+    spfRecommendation: 'SPF 50+ protective barriers, avoid midday direct sun',
+    riskLevel: 'Critical',
+  };
+}

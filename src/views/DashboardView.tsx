@@ -9,12 +9,17 @@ import {
   AlertTriangle,
   ArrowRight,
   Compass,
+  Info,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { LocationData, AqiStandard } from '../types/aqi';
 import { getAqiCategory, formatRelativeTime } from '../lib/aqi';
 import { AqiGauge } from '../components/AqiGauge';
 import { PollutantCard } from '../components/PollutantCard';
 import { WeatherWidget } from '../components/WeatherWidget';
+import { AqiSparkline } from '../components/AqiSparkline';
+import { UvWidget } from '../components/UvWidget';
 
 interface DashboardViewProps {
   data: LocationData | null;
@@ -46,6 +51,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [aiInsight, setAiInsight] = useState<string>('');
   const [loadingAi, setLoadingAi] = useState(false);
+  const [showScaleExplainer, setShowScaleExplainer] = useState(false);
 
   const popularCities = ['Delhi', 'London', 'New York', 'Tokyo', 'Shimla', 'Sydney', 'Paris'];
 
@@ -227,6 +233,59 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </button>
       </div>
 
+      {/* 1000+ vs 500 Scale & Live Model Transparency Accordion */}
+      <div className="rounded-2xl border border-sky-500/20 bg-sky-950/20 light:bg-sky-50/70 p-4 transition-all">
+        <button
+          onClick={() => setShowScaleExplainer(!showScaleExplainer)}
+          className="w-full flex items-center justify-between text-left gap-3"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400 flex-shrink-0">
+              <Info className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-slate-100 light:text-slate-900 block">
+                Why does Google / IQAir show 1,000+ AQI in Delhi while official standards show ~200–500?
+              </span>
+              <span className="text-[11px] text-slate-400 light:text-slate-500">
+                Understanding live numerical models, the official CPCB 500 ceiling, and hyper-local sensors
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 text-xs text-sky-400 font-medium flex-shrink-0">
+            <span>{showScaleExplainer ? 'Hide Details' : 'Read Science'}</span>
+            {showScaleExplainer ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </div>
+        </button>
+
+        {showScaleExplainer && (
+          <div className="mt-3.5 pt-3.5 border-t border-sky-500/20 text-xs space-y-3 leading-relaxed text-slate-300 light:text-slate-700">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="p-3 rounded-xl bg-slate-900/60 light:bg-white border border-slate-800 light:border-slate-200">
+                <strong className="text-sky-400 block mb-1">1. Live Verified Model</strong>
+                <p className="text-[11px] text-slate-400 light:text-slate-600">
+                  AirIQ fetches live hourly data from the <strong>European Copernicus Atmospheric Chemistry Model (CAMS)</strong> at an 11 km regional resolution, capturing the ambient background across Delhi NCR.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-900/60 light:bg-white border border-slate-800 light:border-slate-200">
+                <strong className="text-amber-400 block mb-1">2. Official 500 Cap</strong>
+                <p className="text-[11px] text-slate-400 light:text-slate-600">
+                  By regulatory law, India's <strong>CPCB National AQI</strong> and the <strong>US EPA scale</strong> mathematically <strong>terminate at 500</strong> (&quot;Severe / Hazardous&quot;). Official government portals never report index values above 500.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-900/60 light:bg-white border border-slate-800 light:border-slate-200">
+                <strong className="text-rose-400 block mb-1">3. IQAir Uncapped Spikes</strong>
+                <p className="text-[11px] text-slate-400 light:text-slate-600">
+                  Private apps like Swiss IQAir extrapolate the mathematical formula without an upper cap. Street-corner laser monitors at hotspots like Anand Vihar (beside bus terminals or open burning) detect acute localized spikes that produce 1,000+ readings.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Main Grid: AQI Gauge + Weather & Quick Advisories */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: AQI Radial Gauge (5 cols) */}
@@ -240,13 +299,24 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           />
         </div>
 
-        {/* Right Column: Weather & Activity Guidelines (7 cols) */}
+        {/* Right Column: Weather, UV & Activity Guidelines (7 cols) */}
         <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
-          {/* Weather Widget */}
+          {/* Weather Widget with UV Pill */}
           <WeatherWidget
             temperature={data.weather.temperature}
             humidity={data.weather.humidity}
             windSpeed={data.weather.windSpeed}
+            uvIndex={data.uv?.uvIndex}
+            uvCategory={data.uv?.category}
+          />
+
+          {/* Solar UV Index & Radiation Health Risk Widget */}
+          <UvWidget
+            uv={data.uv}
+            lat={data.coordinates.lat}
+            lng={data.coordinates.lng}
+            city={data.city}
+            aqi={data.aqi}
           />
 
           {/* Activity Recommendations Quick Grid */}
@@ -321,6 +391,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* 24-Hour AQI Sparkline Fluctuations */}
+      <AqiSparkline
+        data={data.sparkline}
+        currentAqi={data.aqi}
+        standard={standard}
+        city={data.city}
+        lat={data.coordinates.lat}
+        lng={data.coordinates.lng}
+      />
 
       {/* Pollutant Cards Grid (PM2.5, PM10, NO2, SO2, CO, O3) */}
       <div>

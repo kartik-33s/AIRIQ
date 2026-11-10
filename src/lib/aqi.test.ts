@@ -7,6 +7,7 @@ import {
   detectPollutionSpikes,
   calculatePercentChange,
   calculateDifferenceMultiplier,
+  getUvCategoryInfo,
 } from './aqi';
 
 test('US EPA PM2.5 calculation breakpoints', () => {
@@ -94,4 +95,26 @@ test('Percentage change and difference multiplier math', () => {
 
   assert.equal(calculateDifferenceMultiplier(230, 100), '2.3x');
   assert.equal(calculateDifferenceMultiplier(50, 50), '1.0x');
+});
+
+test('UV Index category and protection advice derivation', () => {
+  const low = getUvCategoryInfo(1.5, true);
+  assert.equal(low.name, 'Low');
+  assert.equal(low.burnTimeMinutes, 60);
+
+  const mod = getUvCategoryInfo(4.5, true);
+  assert.equal(mod.name, 'Moderate');
+  assert.equal(mod.burnTimeMinutes, 40);
+
+  const high = getUvCategoryInfo(7.2, true);
+  assert.equal(high.name, 'High');
+  assert.equal(high.burnTimeMinutes, 20);
+
+  const extreme = getUvCategoryInfo(11.5, true);
+  assert.equal(extreme.name, 'Extreme');
+  assert.equal(extreme.burnTimeMinutes, 8);
+
+  const night = getUvCategoryInfo(5.0, false);
+  assert.equal(night.name, 'Low');
+  assert.equal(night.riskLevel, 'Minimal');
 });

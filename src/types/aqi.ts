@@ -4,6 +4,26 @@ export type { AqiStandard, AqiCategoryName, AqiCategoryInfo };
 
 export type ActiveTab = 'dashboard' | 'map' | 'history' | 'forecast' | 'comparison' | 'health';
 
+export interface SparklinePoint {
+  time: string;
+  hour: string;
+  aqi: number;
+  pm25?: number | null;
+  pm10?: number | null;
+}
+
+export interface UvData {
+  uvIndex: number;
+  maxUvToday?: number | null;
+  solarRadiation?: number | null; // shortwave radiation in W/m²
+  isDay: boolean;
+  category: 'Low' | 'Moderate' | 'High' | 'Very High' | 'Extreme';
+  color: string;
+  burnTimeMinutes?: number | null;
+  protectionAdvice: string;
+  spfRecommendation: string;
+}
+
 export interface LocationData {
   city: string;
   stationName: string;
@@ -28,6 +48,8 @@ export interface LocationData {
     o3: number | null;
   };
   subIndices?: Record<string, number>;
+  sparkline?: SparklinePoint[];
+  uv?: UvData;
 }
 
 export interface MapStation {
