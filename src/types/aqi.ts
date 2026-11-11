@@ -2,7 +2,7 @@ import { AqiStandard, AqiCategoryName, AqiCategoryInfo } from '../lib/aqi';
 
 export type { AqiStandard, AqiCategoryName, AqiCategoryInfo };
 
-export type ActiveTab = 'dashboard' | 'map' | 'history' | 'forecast' | 'comparison' | 'health';
+export type ActiveTab = 'dashboard' | 'map' | '3d' | 'history' | 'forecast' | 'comparison' | 'health' | 'champion';
 
 export interface SparklinePoint {
   time: string;
@@ -86,6 +86,7 @@ export interface LocationData {
   subIndices?: Record<string, number>;
   sparkline?: SparklinePoint[];
   uv?: UvData;
+  windDispersion?: WindDispersionData;
 }
 
 export interface MapStation {

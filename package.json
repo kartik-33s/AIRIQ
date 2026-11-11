@@ -8,7 +8,7 @@
     "build": "vite build",
     "start": "tsx server.ts",
     "preview": "vite preview",
-    "test": "tsx --test src/lib/aqi.test.ts",
+    "test": "tsx --test src/lib/*.test.ts",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"
   },

@@ -10,10 +10,13 @@ import { ForecastView } from './views/ForecastView';
 import { ComparisonView } from './views/ComparisonView';
 import { HealthView } from './views/HealthView';
 import { Atmospheric3DView } from './views/Atmospheric3DView';
+import { ChampionProfileView } from './views/ChampionProfileView';
 import { AiAssistantModal } from './components/AiAssistantModal';
 import { SmartAlertsModal } from './components/SmartAlertsModal';
 import { ReportModal } from './components/ReportModal';
 import { ShareCardModal } from './components/ShareCardModal';
+import { AmbientSoundModal } from './components/AmbientSoundModal';
+import { useAmbientSoundscape } from './lib/useAmbientSoundscape';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
@@ -42,6 +45,10 @@ export default function App() {
   const [isAlertsOpen, setIsAlertsOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isSoundOpen, setIsSoundOpen] = useState(false);
+
+  // Sync ambient soundscape engine with live telemetry AQI
+  useAmbientSoundscape(locationData?.aqi);
 
   // Initialize standard from localStorage
   useEffect(() => {
@@ -242,6 +249,7 @@ export default function App() {
         onOpenAlerts={() => setIsAlertsOpen(true)}
         onOpenReport={() => setIsReportOpen(true)}
         onOpenShare={() => setIsShareOpen(true)}
+        onOpenSound={() => setIsSoundOpen(true)}
         onRefresh={() => {
           if (locationData?.coordinates) {
             fetchLiveAqi(
@@ -286,7 +294,12 @@ export default function App() {
             onOpenAiAssistant={() => setIsAiOpen(true)}
             onNavigateToMap={() => setActiveTab('map')}
             onNavigateTo3D={() => setActiveTab('3d')}
+            onNavigateToChampion={() => setActiveTab('champion')}
           />
+        )}
+
+        {activeTab === 'champion' && (
+          <ChampionProfileView currentLocation={locationData} standard={standard} />
         )}
 
         {activeTab === 'map' && (
@@ -368,6 +381,12 @@ export default function App() {
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
         data={locationData}
+      />
+
+      <AmbientSoundModal
+        isOpen={isSoundOpen}
+        onClose={() => setIsSoundOpen(false)}
+        currentLocation={locationData}
       />
     </div>
   );

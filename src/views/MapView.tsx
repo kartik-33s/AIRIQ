@@ -306,13 +306,13 @@ export const MapView: React.FC<MapViewProps> = ({
   return (
     <div className="relative w-full h-[calc(100vh-4rem)] md:h-[calc(100vh-7rem)] flex flex-col overflow-hidden">
       {/* Top Floating Controls Bar */}
-      <div className="absolute top-4 left-4 right-4 z-[1000] flex flex-wrap items-center justify-between gap-3 pointer-events-none">
+      <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 z-[1000] flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 pointer-events-none">
         {/* Search Input Box */}
         <form
           onSubmit={handleMapSearchSubmit}
-          className="pointer-events-auto flex items-center bg-slate-900/90 light:bg-white/95 backdrop-blur-md rounded-xl border border-slate-700/80 light:border-slate-300 shadow-xl px-3 py-1.5 w-full sm:w-80"
+          className="pointer-events-auto flex items-center bg-slate-900/95 light:bg-white/95 backdrop-blur-md rounded-xl border border-slate-700/80 light:border-slate-300 shadow-xl px-3 py-1.5 w-full sm:w-72"
         >
-          <Search className="w-4 h-4 text-slate-400 mr-2" />
+          <Search className="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" />
           <input
             type="text"
             value={mapSearch}
@@ -324,17 +324,17 @@ export const MapView: React.FC<MapViewProps> = ({
             type="button"
             onClick={onUseCurrentLocation}
             title="Pan to My Location"
-            className="p-1 text-slate-400 hover:text-sky-400 transition-colors"
+            className="p-1 text-slate-400 hover:text-sky-400 transition-colors flex-shrink-0"
           >
             <Compass className="w-4 h-4" />
           </button>
         </form>
 
         {/* Layer Toggles & Refresh Status */}
-        <div className="pointer-events-auto flex items-center gap-2 bg-slate-900/90 light:bg-white/95 backdrop-blur-md rounded-xl border border-slate-700/80 light:border-slate-300 shadow-xl px-3 py-1.5 text-xs text-slate-300 light:text-slate-700 flex-wrap">
+        <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2 bg-slate-900/95 light:bg-white/95 backdrop-blur-md rounded-xl border border-slate-700/80 light:border-slate-300 shadow-xl px-2.5 py-1.5 text-xs text-slate-300 light:text-slate-700 overflow-x-auto no-scrollbar max-w-full">
           <button
             onClick={() => setShowStations(!showStations)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors ${
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
               showStations ? 'bg-sky-500/20 text-sky-400 font-semibold' : 'text-slate-400'
             }`}
           >
@@ -343,7 +343,7 @@ export const MapView: React.FC<MapViewProps> = ({
 
           <button
             onClick={() => setShowHeatmap(!showHeatmap)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors ${
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
               showHeatmap ? 'bg-indigo-500/20 text-indigo-400 font-semibold' : 'text-slate-400'
             }`}
           >
@@ -352,36 +352,36 @@ export const MapView: React.FC<MapViewProps> = ({
 
           <button
             onClick={() => setShowHotspots(!showHotspots)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors ${
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
               showHotspots ? 'bg-rose-500/20 text-rose-400 font-semibold' : 'text-slate-400'
             }`}
           >
             <Flame className="w-3.5 h-3.5" /> Hotspots
           </button>
 
-          <span className="w-px h-4 bg-slate-700 light:bg-slate-300 mx-0.5 hidden sm:inline-block" />
+          <span className="w-px h-4 bg-slate-700 light:bg-slate-300 mx-0.5 flex-shrink-0" />
 
           <button
             onClick={() => setShowWindParticles(!showWindParticles)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors ${
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
               showWindParticles ? 'bg-sky-500/25 text-sky-400 font-semibold border border-sky-500/30' : 'text-slate-400'
             }`}
             title="Toggle Animated Wind Streamlines"
           >
-            <Wind className="w-3.5 h-3.5" /> Wind Streamlines
+            <Wind className="w-3.5 h-3.5" /> Streamlines
           </button>
 
           <button
             onClick={() => setShowSmokeMode(!showSmokeMode)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors ${
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
               showSmokeMode ? 'bg-amber-500/25 text-amber-400 font-semibold border border-amber-500/30' : 'text-slate-400'
             }`}
             title="Toggle Transboundary Smoke Dispersion"
           >
-            <Flame className="w-3.5 h-3.5 text-amber-400" /> Smoke Plumes
+            <Flame className="w-3.5 h-3.5 text-amber-400" /> Smoke
           </button>
 
-          {loading && <RefreshCw className="w-3.5 h-3.5 animate-spin text-sky-400 ml-1" />}
+          {loading && <RefreshCw className="w-3.5 h-3.5 animate-spin text-sky-400 ml-1 flex-shrink-0" />}
         </div>
       </div>
 
@@ -398,7 +398,7 @@ export const MapView: React.FC<MapViewProps> = ({
       />
 
       {/* Floating Map Legend (Bottom Left) */}
-      <div className="absolute bottom-6 left-4 z-[1000] hidden sm:block bg-slate-950/85 light:bg-white/90 backdrop-blur-md p-3 rounded-xl border border-slate-800 light:border-slate-300 text-xs shadow-lg space-y-1.5">
+      <div className="absolute bottom-16 sm:bottom-6 left-4 z-[1000] hidden sm:block bg-slate-950/85 light:bg-white/90 backdrop-blur-md p-3 rounded-xl border border-slate-800 light:border-slate-300 text-xs shadow-lg space-y-1.5">
         <span className="font-bold text-[11px] text-slate-400 uppercase tracking-wider block">
           AQI Scale ({standard === 'US_EPA' ? 'US EPA' : 'India CPCB'})
         </span>
@@ -430,7 +430,7 @@ export const MapView: React.FC<MapViewProps> = ({
 
       {/* Slide-Out Side Panel on Desktop or Bottom Sheet on Mobile */}
       {selectedStation && (
-        <div className="absolute bottom-4 right-4 sm:top-20 sm:bottom-auto w-[calc(100%-2rem)] sm:w-80 z-[1001] bg-slate-900/95 light:bg-white/95 backdrop-blur-md rounded-2xl border border-slate-700 light:border-slate-300 shadow-2xl p-4 text-xs animate-in slide-in-from-bottom sm:slide-in-from-right duration-200">
+        <div className="absolute bottom-16 right-3 sm:right-4 sm:top-20 sm:bottom-auto w-[calc(100%-1.5rem)] sm:w-80 z-[1001] bg-slate-900/95 light:bg-white/95 backdrop-blur-md rounded-2xl border border-slate-700 light:border-slate-300 shadow-2xl p-4 text-xs animate-in slide-in-from-bottom sm:slide-in-from-right duration-200">
           <div className="flex items-center justify-between pb-2 border-b border-slate-800 light:border-slate-200">
             <h4 className="font-bold text-slate-100 light:text-slate-900 text-sm truncate pr-2">
               {selectedStation.name}

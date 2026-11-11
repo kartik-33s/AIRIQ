@@ -3,6 +3,7 @@ import { toPng } from 'html-to-image';
 import { Download, Share2, X, Sparkles, Check, RefreshCw } from 'lucide-react';
 import { LocationData } from '../types/aqi';
 import { getAqiCategory, formatRelativeTime } from '../lib/aqi';
+import { AirIqIcon } from './AirIqLogo';
 
 interface ShareCardModalProps {
   isOpen: boolean;
@@ -63,8 +64,8 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ isOpen, onClose,
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-6 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
+      <div className="relative w-full max-w-md bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-4 sm:p-6 overflow-hidden max-h-[92vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-800 light:border-slate-200">
           <div className="flex items-center gap-2">
@@ -76,7 +77,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ isOpen, onClose,
           <button
             onClick={onClose}
             aria-label="Close Share Card"
-            className="p-1 rounded-lg text-slate-400 hover:text-white light:hover:text-slate-900"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white light:hover:text-slate-900 touch-manipulation min-w-[36px] min-h-[36px] flex items-center justify-center"
           >
             <X className="w-5 h-5" />
           </button>
@@ -86,11 +87,12 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ isOpen, onClose,
         <div className="mt-4 flex justify-center">
           <div
             ref={cardRef}
-            className="w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-5 rounded-2xl border border-slate-700/60 shadow-xl relative overflow-hidden"
+            className="w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-4 sm:p-5 rounded-2xl border border-slate-700/60 shadow-xl relative overflow-hidden"
           >
             {/* Top Brand Tag */}
             <div className="flex items-center justify-between text-xs text-slate-400 mb-3">
-              <span className="font-extrabold tracking-wider text-sky-400 flex items-center gap-1">
+              <span className="font-extrabold tracking-wider text-sky-400 flex items-center gap-1.5">
+                <AirIqIcon className="w-4 h-4 text-sky-400 inline-block" />
                 AirIQ <span className="text-[10px] text-slate-400 font-normal">Platform</span>
               </span>
               <span className="text-[10px] bg-slate-800/80 px-2 py-0.5 rounded text-slate-300">
@@ -99,24 +101,24 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ isOpen, onClose,
             </div>
 
             {/* City & Timestamp */}
-            <h4 className="text-xl font-bold tracking-tight text-slate-100">{data.city}</h4>
+            <h4 className="text-lg sm:text-xl font-bold tracking-tight text-slate-100">{data.city}</h4>
             <p className="text-xs text-slate-400 mt-0.5">
               Updated {formatRelativeTime(data.lastUpdated)} • {data.sourceName}
             </p>
 
             {/* Main AQI Section */}
-            <div className="my-5 p-4 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
+            <div className="my-4 sm:my-5 p-3.5 sm:p-4 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs text-slate-400 block font-medium">AIR QUALITY INDEX</span>
+                <span className="text-[10px] sm:text-xs text-slate-400 block font-medium">AIR QUALITY INDEX</span>
                 <span
-                  className="text-5xl font-black tracking-tight tabular-nums"
+                  className="text-4xl sm:text-5xl font-black tracking-tight tabular-nums"
                   style={{ color: category.color }}
                 >
                   {data.aqi}
                 </span>
               </div>
               <div
-                className="px-3.5 py-1.5 rounded-full text-xs font-bold border"
+                className="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold border"
                 style={{
                   backgroundColor: category.bgColor,
                   borderColor: category.borderColor,
@@ -157,18 +159,18 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ isOpen, onClose,
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-5 flex gap-3">
+        <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row gap-2 sm:gap-3">
           <button
             onClick={handleDownload}
             disabled={downloading}
-            className="flex-1 py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-md disabled:opacity-50"
+            className="flex-1 py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-md disabled:opacity-50 min-h-[42px] touch-manipulation"
           >
             {downloading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             {downloading ? 'Exporting...' : 'Download PNG Card'}
           </button>
           <button
             onClick={handleShare}
-            className="py-2.5 px-4 rounded-xl border border-slate-700 light:border-slate-300 text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-100 font-medium text-xs flex items-center justify-center gap-1.5 transition-colors"
+            className="py-2.5 px-4 rounded-xl border border-slate-700 light:border-slate-300 text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-100 font-medium text-xs flex items-center justify-center gap-1.5 transition-colors min-h-[42px] touch-manipulation"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
             {copied ? 'Link Copied!' : 'Share'}

@@ -118,36 +118,36 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
         </div>
 
         {/* Range Buttons */}
-        <div className="flex items-center gap-2 bg-slate-900 light:bg-slate-100 p-1 rounded-xl border border-slate-800 light:border-slate-300 text-xs">
+        <div className="flex items-center gap-1.5 bg-slate-900 light:bg-slate-100 p-1 rounded-xl border border-slate-800 light:border-slate-300 text-xs w-full sm:w-auto">
           <button
             onClick={() => setDays(7)}
-            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+            className={`flex-1 sm:flex-none px-3 py-2 rounded-lg font-semibold transition-all min-h-[38px] touch-manipulation text-center ${
               days === 7
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800'
             }`}
           >
-            Last 7 Days
+            <span className="hidden sm:inline">Last </span>7 Days
           </button>
           <button
             onClick={() => setDays(30)}
-            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+            className={`flex-1 sm:flex-none px-3 py-2 rounded-lg font-semibold transition-all min-h-[38px] touch-manipulation text-center ${
               days === 30
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800'
             }`}
           >
-            Last 30 Days
+            <span className="hidden sm:inline">Last </span>30 Days
           </button>
           <button
             onClick={() => setDays(90)}
-            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+            className={`flex-1 sm:flex-none px-3 py-2 rounded-lg font-semibold transition-all min-h-[38px] touch-manipulation text-center ${
               days === 90
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800'
             }`}
           >
-            Last 90 Days
+            <span className="hidden sm:inline">Last </span>90 Days
           </button>
         </div>
       </div>
@@ -218,15 +218,15 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
       </div>
 
       {/* Interactive Recharts Section */}
-      <div className="p-6 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-md">
+      <div className="p-4 sm:p-6 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-md">
         {/* Chart View Toggle */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               onClick={() => setActiveChart('aqi')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+              className={`flex-1 sm:flex-none px-3.5 py-2 rounded-xl text-xs font-bold transition-colors min-h-[38px] touch-manipulation text-center ${
                 activeChart === 'aqi'
-                  ? 'bg-sky-500 text-white'
+                  ? 'bg-sky-500 text-white shadow-sm'
                   : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
               }`}
             >
@@ -234,9 +234,9 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
             </button>
             <button
               onClick={() => setActiveChart('particulates')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+              className={`flex-1 sm:flex-none px-3.5 py-2 rounded-xl text-xs font-bold transition-colors min-h-[38px] touch-manipulation text-center ${
                 activeChart === 'particulates'
-                  ? 'bg-indigo-600 text-white'
+                  ? 'bg-indigo-600 text-white shadow-sm'
                   : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
               }`}
             >
@@ -251,7 +251,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
         </div>
 
         {/* Chart Rendering */}
-        <div className="w-full h-80">
+        <div className="w-full h-64 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             {activeChart === 'aqi' ? (
               <AreaChart data={historyData?.daily || []}>

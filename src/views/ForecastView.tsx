@@ -110,7 +110,7 @@ export const ForecastView: React.FC<ForecastViewProps> = ({ currentLocation, sta
       </div>
 
       {/* Hourly 48-Hour Forecast Chart Card */}
-      <div className="p-6 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-md space-y-4">
+      <div className="p-4 sm:p-6 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-md space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 className="text-base font-bold text-slate-100 light:text-slate-900 flex items-center gap-2">
@@ -135,7 +135,7 @@ export const ForecastView: React.FC<ForecastViewProps> = ({ currentLocation, sta
         </div>
 
         {/* Recharts Chart */}
-        <div className="w-full h-80">
+        <div className="w-full h-64 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={chartData}>
               <defs>
@@ -238,7 +238,7 @@ export const ForecastView: React.FC<ForecastViewProps> = ({ currentLocation, sta
               <div
                 key={d.date}
                 onClick={() => setSelectedDay(d.date)}
-                className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+                className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 touch-manipulation select-none ${
                   isSelected
                     ? 'bg-slate-800/90 light:bg-slate-100 border-sky-500 shadow-md scale-[1.02]'
                     : 'bg-slate-900/70 light:bg-white border-slate-800 light:border-slate-200 hover:border-slate-700'

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Wind, ExternalLink, ShieldCheck, Heart } from 'lucide-react';
+import { ExternalLink, ShieldCheck, Heart } from 'lucide-react';
+import { AirIqBrandBadge } from './AirIqLogo';
 
 export const Footer: React.FC = () => {
   return (
@@ -8,10 +9,8 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand & Mission */}
           <div className="space-y-3 md:col-span-1">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold">
-                <Wind className="w-5 h-5" />
-              </div>
+            <div className="flex items-center gap-2.5">
+              <AirIqBrandBadge size="sm" />
               <span className="text-base font-black text-slate-100 light:text-slate-900 tracking-tight">
                 AirIQ Platform
               </span>

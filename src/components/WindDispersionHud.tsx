@@ -41,7 +41,12 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
   onSelectPreset,
   activeCityName,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 640;
+    }
+    return true;
+  });
 
   const presets = [
     { name: 'Delhi', lat: 28.6139, lng: 77.209, label: 'Delhi (Stubble Smog Corridor)' },
@@ -56,11 +61,11 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
   const blowTowardDeg = (center.windDirection + 180) % 360;
 
   return (
-    <div className="absolute bottom-6 right-4 z-[999] w-[calc(100%-2rem)] sm:w-96 bg-slate-900/95 light:bg-white/95 backdrop-blur-md rounded-2xl border border-slate-700/80 light:border-slate-300 shadow-2xl overflow-hidden transition-all text-xs">
+    <div className="absolute bottom-16 sm:bottom-6 right-2 sm:right-4 left-2 sm:left-auto w-auto sm:w-96 z-[999] bg-slate-900/95 light:bg-white/95 backdrop-blur-md rounded-2xl border border-slate-700/80 light:border-slate-300 shadow-2xl overflow-hidden transition-all text-xs">
       {/* Top Header Bar */}
       <div
         onClick={() => setIsExpanded(!isExpanded)}
-        className="p-3.5 bg-gradient-to-r from-slate-900 via-sky-950/40 to-slate-900 light:from-slate-50 light:to-sky-50 border-b border-slate-800 light:border-slate-200 flex items-center justify-between cursor-pointer select-none"
+        className="p-3 sm:p-3.5 bg-gradient-to-r from-slate-900 via-sky-950/40 to-slate-900 light:from-slate-50 light:to-sky-50 border-b border-slate-800 light:border-slate-200 flex items-center justify-between cursor-pointer select-none"
       >
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400">

@@ -20,27 +20,27 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, data,
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-6 my-8 max-h-[90vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-4 sm:p-6 my-4 sm:my-8 max-h-[92vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-800 light:border-slate-200 print:hidden">
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-sky-400" />
-            <h3 className="font-bold text-slate-100 light:text-slate-900 text-lg">
+            <h3 className="font-bold text-slate-100 light:text-slate-900 text-base sm:text-lg">
               Pollution Impact & Health Report
             </h3>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="py-1.5 px-3 rounded-lg bg-sky-500 hover:bg-sky-600 text-white font-medium text-xs flex items-center gap-1.5 transition-colors"
+              className="py-1.5 px-3 rounded-lg bg-sky-500 hover:bg-sky-600 text-white font-medium text-xs flex items-center gap-1.5 transition-colors touch-manipulation min-h-[36px]"
             >
-              <Printer className="w-4 h-4" /> Print / Save PDF
+              <Printer className="w-4 h-4" /> <span className="hidden sm:inline">Print / Save PDF</span><span className="sm:hidden">Print</span>
             </button>
             <button
               onClick={onClose}
               aria-label="Close Report"
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-100 light:hover:text-slate-900"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 light:hover:text-slate-900 touch-manipulation min-w-[36px] min-h-[36px] flex items-center justify-center"
             >
               <X className="w-5 h-5" />
             </button>
@@ -48,12 +48,12 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, data,
         </div>
 
         {/* Report Content */}
-        <div className="flex-1 overflow-y-auto pr-2 py-4 space-y-6 text-slate-200 light:text-slate-800 text-sm print:text-black">
+        <div className="flex-1 overflow-y-auto pr-1 sm:pr-2 py-4 space-y-5 text-slate-200 light:text-slate-800 text-xs sm:text-sm print:text-black">
           {/* Executive Header */}
           <div className="border-b border-slate-800 light:border-slate-200 pb-4">
-            <div className="flex justify-between items-start">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
               <div>
-                <h1 className="text-2xl font-black text-sky-400 light:text-sky-600 tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black text-sky-400 light:text-sky-600 tracking-tight">
                   AirIQ Environmental Assessment
                 </h1>
                 <p className="text-xs text-slate-400 light:text-slate-500 mt-0.5">
@@ -63,7 +63,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, data,
                   Assessment Date: {new Date(data.lastUpdated).toLocaleString()}
                 </p>
               </div>
-              <div className="text-right">
+              <div className="sm:text-right">
                 <span className="text-xs px-2.5 py-1 rounded bg-slate-800 light:bg-slate-100 font-mono text-slate-300 light:text-slate-700">
                   Standard: {data.standard === 'US_EPA' ? 'US EPA' : 'India CPCB'}
                 </span>
@@ -72,7 +72,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, data,
           </div>
 
           {/* Key Findings Card */}
-          <div className="p-4 rounded-xl bg-slate-800/60 light:bg-slate-50 border border-slate-700/60 light:border-slate-200">
+          <div className="p-3.5 sm:p-4 rounded-xl bg-slate-800/60 light:bg-slate-50 border border-slate-700/60 light:border-slate-200">
             <h4 className="font-bold text-slate-100 light:text-slate-900 text-sm mb-2 flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-amber-400" /> Executive Summary
             </h4>
@@ -90,7 +90,8 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, data,
             <h4 className="font-bold text-slate-100 light:text-slate-900 text-sm mb-2">
               Pollutant Breakdown & Concentrations
             </h4>
-            <table className="w-full text-xs border border-slate-800 light:border-slate-200 rounded-lg overflow-hidden">
+            <div className="overflow-x-auto no-scrollbar rounded-lg border border-slate-800 light:border-slate-200">
+            <table className="w-full text-xs overflow-hidden min-w-[380px]">
               <thead className="bg-slate-800 light:bg-slate-100 text-slate-400 light:text-slate-600 font-semibold text-left">
                 <tr>
                   <th className="p-2.5">Pollutant</th>
@@ -134,6 +135,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, data,
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Historical Trend Note if available */}

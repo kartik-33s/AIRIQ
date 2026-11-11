@@ -18,6 +18,7 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
   const [cityName, setCityName] = useState<string>('');
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [statusNotice, setStatusNotice] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -52,7 +53,8 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
 
   const requestNotificationPermission = async () => {
     if (!('Notification' in window)) {
-      alert('This browser does not support desktop notifications.');
+      setStatusNotice('This browser does not support desktop notifications.');
+      setTimeout(() => setStatusNotice(null), 3500);
       return;
     }
     const perm = await Notification.requestPermission();
@@ -62,6 +64,8 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
         body: 'You will receive real-time alerts when air pollution exceeds your chosen safety threshold.',
         icon: '/favicon.ico',
       });
+      setStatusNotice('System notifications enabled successfully!');
+      setTimeout(() => setStatusNotice(null), 3000);
     }
   };
 
@@ -95,14 +99,17 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
       new Notification(`AirIQ High Pollution Warning!`, {
         body: `${cityName || 'Selected City'} AQI reached ${threshold} (Exceeds your safe limit). Wear an N95 mask and close windows.`,
       });
+      setStatusNotice(`Notification sent: ${cityName || 'City'} AQI reached ${threshold}`);
+      setTimeout(() => setStatusNotice(null), 3000);
     } else {
-      alert(`[AirIQ Alert Test] ${cityName} AQI reached ${threshold}. Enable browser notifications to receive background system alerts.`);
+      setStatusNotice(`[Simulation Alert] ${cityName || 'City'} AQI reached ${threshold}. Enable browser notifications for system alerts.`);
+      setTimeout(() => setStatusNotice(null), 4000);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-6 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-4 sm:p-6 overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-800 light:border-slate-200">
           <div className="flex items-center gap-3">
@@ -145,9 +152,17 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
           )}
         </div>
 
+        {/* Status Notice Banner */}
+        {statusNotice && (
+          <div className="mt-3 p-3 rounded-xl bg-sky-500/10 border border-sky-500/30 text-xs text-sky-400 flex items-center gap-2 animate-in fade-in">
+            <BellRing className="w-4 h-4 flex-shrink-0" />
+            <span>{statusNotice}</span>
+          </div>
+        )}
+
         {/* Add New Alert Form */}
-        <form onSubmit={handleAddAlert} className="mt-5 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+        <form onSubmit={handleAddAlert} className="mt-4 space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-400 light:text-slate-600 mb-1">
                 Monitored City
@@ -179,17 +194,17 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <button
               type="submit"
-              className="flex-1 py-2 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+              className="flex-1 py-2.5 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm min-h-[40px] touch-manipulation"
             >
               <Plus className="w-4 h-4" /> Add Alert Rule
             </button>
             <button
               type="button"
               onClick={triggerTestAlert}
-              className="py-2 px-3 rounded-lg border border-slate-700 light:border-slate-300 text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-100 text-xs font-medium"
+              className="py-2.5 px-4 rounded-lg border border-slate-700 light:border-slate-300 text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-100 text-xs font-medium min-h-[40px] touch-manipulation flex items-center justify-center"
             >
               Test Alert
             </button>
