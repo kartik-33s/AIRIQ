@@ -189,8 +189,8 @@ export const Atmospheric3DView: React.FC<Atmospheric3DViewProps> = ({
 
       {/* Top-Left: Minimal Telemetry Pill */}
       <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-10 pointer-events-none">
-        <div className="p-2.5 sm:p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl max-w-[210px] sm:max-w-sm pointer-events-auto space-y-1.5 sm:space-y-2">
-          <div className="flex items-center justify-between gap-2">
+        <div className="p-2 sm:p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl max-w-[170px] sm:max-w-sm pointer-events-auto space-y-1 sm:space-y-2">
+          <div className="flex items-center justify-between gap-1.5">
             <div className="flex items-center gap-1.5 truncate">
               <MapPin className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
               <h2 className="text-xs sm:text-sm font-bold text-slate-100 tracking-tight truncate">
@@ -211,23 +211,23 @@ export const Atmospheric3DView: React.FC<Atmospheric3DViewProps> = ({
 
           <div className="flex items-baseline justify-between pt-0.5 border-t border-slate-800/80">
             <div>
-              <span className="text-[9px] sm:text-[10px] text-slate-400 block">
-                {activeScenario !== 'live' ? 'Simulated AQI' : 'Air Quality Index'}
+              <span className="text-[8px] sm:text-[10px] text-slate-400 block truncate">
+                {activeScenario !== 'live' ? 'Simulated AQI' : 'Air Quality'}
               </span>
               <div className="flex items-baseline gap-1">
                 <span
-                  className="text-xl sm:text-2xl font-black font-mono tracking-tight"
+                  className="text-lg sm:text-2xl font-black font-mono tracking-tight"
                   style={{ color: category.color }}
                 >
                   {curAqi}
                 </span>
-                <span className="text-[10px] sm:text-xs text-slate-400">AQI</span>
+                <span className="text-[9px] sm:text-xs text-slate-400">AQI</span>
               </div>
             </div>
 
-            <div className="text-right text-[10px] sm:text-[11px] space-y-0.5">
+            <div className="text-right text-[9px] sm:text-[11px] space-y-0.5">
               <span className="text-slate-400 block">
-                Wind: <strong className="text-slate-200">{simulatedWindSpeed ?? currentLocation?.weather.windSpeed ?? 8} km/h</strong>
+                Wind: <strong className="text-slate-200">{simulatedWindSpeed ?? currentLocation?.weather.windSpeed ?? 8}k</strong>
               </span>
               <span className="text-slate-400 block">
                 PM2.5: <strong className="text-slate-200">{currentLocation?.pollutants.pm25 ?? 'N/A'}</strong>
@@ -236,15 +236,15 @@ export const Atmospheric3DView: React.FC<Atmospheric3DViewProps> = ({
           </div>
 
           {activeScenario !== 'live' && (
-            <div className="pt-1 border-t border-slate-800 flex items-center justify-between text-[10px]">
+            <div className="pt-1 border-t border-slate-800 flex items-center justify-between text-[9px] sm:text-[10px]">
               <span className="text-amber-400 font-semibold flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> Sandbox Mode
+                <Sparkles className="w-2.5 h-2.5" /> Sandbox
               </span>
               <button
                 onClick={() => applyScenario('live')}
-                className="text-sky-400 hover:underline"
+                className="text-sky-400 hover:underline min-h-[28px] touch-manipulation"
               >
-                Reset to Live
+                Reset
               </button>
             </div>
           )}
@@ -252,66 +252,70 @@ export const Atmospheric3DView: React.FC<Atmospheric3DViewProps> = ({
       </div>
 
       {/* Top-Right: Camera Presets & Audio Mute Button */}
-      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-10 flex items-center gap-1.5">
-        <div className="p-1 rounded-xl bg-slate-900/90 border border-slate-800 shadow-xl flex items-center gap-0.5 sm:gap-1 text-xs">
+      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-10 flex items-center gap-1">
+        <div className="p-0.5 sm:p-1 rounded-xl bg-slate-900/90 border border-slate-800 shadow-xl flex items-center gap-0.5 sm:gap-1 text-xs">
           <button
             onClick={() => {
               setSelectedSensorId(null);
               setCameraPreset('hero');
             }}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-medium text-[10px] sm:text-xs transition-colors ${
+            className={`px-2 sm:px-3 py-1.5 rounded-lg font-medium text-[10px] sm:text-xs transition-colors touch-manipulation min-h-[34px] ${
               cameraPreset === 'hero' && !selectedSensorId
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <span className="hidden sm:inline">Hero </span>Station
+            <span className="sm:hidden">Hero</span>
+            <span className="hidden sm:inline">Hero Station</span>
           </button>
           <button
             onClick={() => {
               setSelectedSensorId(null);
               setCameraPreset('dispersion');
             }}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-medium text-[10px] sm:text-xs transition-colors ${
+            className={`px-2 sm:px-3 py-1.5 rounded-lg font-medium text-[10px] sm:text-xs transition-colors touch-manipulation min-h-[34px] ${
               cameraPreset === 'dispersion'
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            Wind<span className="hidden sm:inline"> Dispersion</span>
+            <span className="sm:hidden">Wind</span>
+            <span className="hidden sm:inline">Wind Dispersion</span>
           </button>
           <button
             onClick={() => {
               setSelectedSensorId(null);
               setCameraPreset('inversion');
             }}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-medium text-[10px] sm:text-xs transition-colors ${
+            className={`px-2 sm:px-3 py-1.5 rounded-lg font-medium text-[10px] sm:text-xs transition-colors touch-manipulation min-h-[34px] ${
               cameraPreset === 'inversion'
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <span className="hidden sm:inline">Inversion </span>Cap
+            <span className="sm:hidden">Cap</span>
+            <span className="hidden sm:inline">Inversion Cap</span>
           </button>
           <button
             onClick={() => {
               setSelectedSensorId(null);
               setCameraPreset('panorama');
             }}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-medium text-[10px] sm:text-xs transition-colors ${
+            className={`px-2 sm:px-3 py-1.5 rounded-lg font-medium text-[10px] sm:text-xs transition-colors touch-manipulation min-h-[34px] ${
               cameraPreset === 'panorama'
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <span className="hidden sm:inline">City </span>Panorama
+            <span className="sm:hidden">City</span>
+            <span className="hidden sm:inline">City Panorama</span>
           </button>
         </div>
 
         {/* Ambient Web Audio Synthesizer Toggle */}
         <button
           onClick={toggleSound}
-          className={`p-2 rounded-xl border transition-colors shadow-xl ${
+          className={`p-2 rounded-xl border transition-colors shadow-xl min-h-[34px] min-w-[34px] flex items-center justify-center touch-manipulation ${
             isMuted
               ? 'bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white'
               : 'bg-sky-500/20 border-sky-500/40 text-sky-400'
@@ -324,7 +328,7 @@ export const Atmospheric3DView: React.FC<Atmospheric3DViewProps> = ({
 
       {/* Floating Macro Telemetry Card (When an individual sensor is selected) */}
       {activeSensor && (
-        <div className="absolute top-16 sm:top-20 left-2 sm:left-4 z-20 max-w-xs sm:max-w-sm p-4 rounded-2xl bg-slate-900/95 border border-sky-500/40 shadow-2xl space-y-2.5 animate-in fade-in duration-200">
+        <div className="absolute top-16 sm:top-20 left-2 sm:left-4 z-20 w-[calc(100vw-1rem)] sm:w-auto max-w-xs sm:max-w-sm max-h-[70vh] overflow-y-auto p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 border border-sky-500/40 shadow-2xl space-y-2.5 animate-in fade-in duration-200">
           <div className="flex items-start justify-between gap-2 border-b border-slate-800 pb-2">
             <div>
               <div className="flex items-center gap-1.5">
@@ -337,7 +341,7 @@ export const Atmospheric3DView: React.FC<Atmospheric3DViewProps> = ({
             </div>
             <button
               onClick={() => setSelectedSensorId(null)}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 min-h-[32px] min-w-[32px] flex items-center justify-center touch-manipulation"
             >
               <X className="w-4 h-4" />
             </button>
@@ -382,7 +386,7 @@ export const Atmospheric3DView: React.FC<Atmospheric3DViewProps> = ({
         <div className="flex justify-center mb-1">
           <button
             onClick={() => setIsDockCollapsed(!isDockCollapsed)}
-            className="px-3.5 py-1 rounded-full bg-slate-900/95 border border-slate-700/80 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 shadow-lg transition-colors cursor-pointer"
+            className="px-3.5 py-1.5 rounded-full bg-slate-900/95 border border-slate-700/80 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 shadow-lg transition-colors cursor-pointer touch-manipulation min-h-[34px]"
           >
             {isDockCollapsed ? (
               <>
@@ -399,7 +403,7 @@ export const Atmospheric3DView: React.FC<Atmospheric3DViewProps> = ({
         </div>
 
         {/* Dock Body (Solid background without backdrop-filter to prevent WebGL frame drop) */}
-        <div className="p-3 sm:p-4 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl space-y-3">
+        <div className="p-3 sm:p-4 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl space-y-3 max-h-[50vh] overflow-y-auto">
           {/* Tab Selection */}
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">
             <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar max-w-full">

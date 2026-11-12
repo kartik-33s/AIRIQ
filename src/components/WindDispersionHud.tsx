@@ -65,10 +65,10 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
       {/* Top Header Bar */}
       <div
         onClick={() => setIsExpanded(!isExpanded)}
-        className="p-3 sm:p-3.5 bg-gradient-to-r from-slate-900 via-sky-950/40 to-slate-900 light:from-slate-50 light:to-sky-50 border-b border-slate-800 light:border-slate-200 flex items-center justify-between cursor-pointer select-none"
+        className="p-3 sm:p-3.5 bg-gradient-to-r from-slate-900 via-sky-950/40 to-slate-900 light:from-slate-50 light:to-sky-50 border-b border-slate-800 light:border-slate-200 flex items-center justify-between cursor-pointer select-none touch-manipulation min-h-[44px]"
       >
         <div className="flex items-center gap-2.5">
-          <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400">
+          <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400 shrink-0">
             <Wind className="w-4 h-4" />
           </div>
           <div>
@@ -76,18 +76,14 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
               <h4 className="font-bold text-slate-100 light:text-slate-900 text-xs">
                 Wind Vector & Smoke Dispersion
               </h4>
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
-              </span>
             </div>
-            <p className="text-[10px] text-slate-400 light:text-slate-500">
+            <p className="text-[10px] text-slate-400 light:text-slate-500 truncate max-w-[210px] sm:max-w-none">
               {cardinal} ({center.windDirection}°) at {center.windSpeed} km/h • {activeCityName}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-slate-400">
+        <div className="flex items-center gap-1.5 text-slate-400 shrink-0">
           <span className="text-[10px] font-semibold text-sky-400 hidden sm:inline">
             {isExpanded ? 'Collapse' : 'Details'}
           </span>
@@ -96,7 +92,7 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
       </div>
 
       {isExpanded && (
-        <div className="p-3.5 space-y-3.5 max-h-[calc(100vh-14rem)] overflow-y-auto no-scrollbar">
+        <div className="p-3.5 space-y-3.5 max-h-[52vh] sm:max-h-[calc(100vh-14rem)] overflow-y-auto no-scrollbar">
           {/* Compass Rose & Velocity Banner */}
           <div className="grid grid-cols-12 gap-3 p-3 rounded-xl bg-slate-800/40 light:bg-slate-100 border border-slate-700/40 light:border-slate-200">
             {/* Rotating 3D Compass */}

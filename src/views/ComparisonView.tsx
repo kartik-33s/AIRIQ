@@ -193,13 +193,13 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
 
       {/* Preset Quick Chips */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar text-xs">
-        <span className="text-slate-500">Quick add:</span>
+        <span className="text-slate-500 shrink-0">Quick add:</span>
         {PRESET_CITIES.filter((c) => !selectedCities.some((sc) => sc.toLowerCase() === c.toLowerCase())).map((c) => (
           <button
             key={`preset-city-${c}`}
             onClick={() => handleAddCity(c)}
             disabled={selectedCities.length >= 5}
-            className="px-2.5 py-1 rounded-full bg-slate-900 light:bg-slate-100 border border-slate-800 light:border-slate-300 text-slate-300 light:text-slate-700 hover:border-sky-500 transition-colors"
+            className="px-3 py-1.5 rounded-full bg-slate-900 light:bg-slate-100 border border-slate-800 light:border-slate-300 text-slate-300 light:text-slate-700 hover:border-sky-500 transition-colors shrink-0 whitespace-nowrap min-h-[34px] touch-manipulation"
           >
             + {c}
           </button>
@@ -335,7 +335,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
       </div>
 
       {/* Overlaid Historical Trend Lines Chart */}
-      <div className="p-6 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-md space-y-4">
+      <div className="p-4 sm:p-6 min-w-0 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-md space-y-4">
         <div>
           <h3 className="text-base font-bold text-slate-100 light:text-slate-900">
             Comparative 7-Day AQI Trend Overlay
@@ -345,7 +345,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
           </p>
         </div>
 
-        <div className="w-full h-80">
+        <div className="w-full min-w-0 h-64 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />

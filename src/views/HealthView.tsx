@@ -252,7 +252,7 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar border-b border-slate-800 light:border-slate-200 pb-3 -mx-1 px-1">
           <button
             onClick={() => setActiveGroup('respiratory')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 min-h-[38px] touch-manipulation whitespace-nowrap ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 min-h-[40px] touch-manipulation whitespace-nowrap active:scale-95 ${
               activeGroup === 'respiratory'
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
@@ -262,7 +262,7 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           </button>
           <button
             onClick={() => setActiveGroup('cardio')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 min-h-[38px] touch-manipulation whitespace-nowrap ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 min-h-[40px] touch-manipulation whitespace-nowrap active:scale-95 ${
               activeGroup === 'cardio'
                 ? 'bg-rose-500 text-white shadow-sm'
                 : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
@@ -272,7 +272,7 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           </button>
           <button
             onClick={() => setActiveGroup('children')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 min-h-[38px] touch-manipulation whitespace-nowrap ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 min-h-[40px] touch-manipulation whitespace-nowrap active:scale-95 ${
               activeGroup === 'children'
                 ? 'bg-amber-500 text-slate-950 shadow-sm'
                 : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
@@ -282,7 +282,7 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           </button>
           <button
             onClick={() => setActiveGroup('elderly')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 min-h-[38px] touch-manipulation whitespace-nowrap ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 min-h-[40px] touch-manipulation whitespace-nowrap active:scale-95 ${
               activeGroup === 'elderly'
                 ? 'bg-emerald-500 text-white shadow-sm'
                 : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'

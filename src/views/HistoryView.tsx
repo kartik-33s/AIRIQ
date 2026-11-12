@@ -251,7 +251,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
         </div>
 
         {/* Chart Rendering */}
-        <div className="w-full h-64 sm:h-80">
+        <div className="w-full min-w-0 h-64 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             {activeChart === 'aqi' ? (
               <AreaChart data={historyData?.daily || []}>

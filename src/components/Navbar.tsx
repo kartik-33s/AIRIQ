@@ -11,11 +11,12 @@ import {
   Share2,
   RefreshCw,
   Compass,
-  Award,
+  MoreHorizontal,
+  X,
+  Volume2,
 } from 'lucide-react';
 import { ActiveTab, AqiStandard, LocationData } from '../types/aqi';
 import { AirIqBrandBadge } from './AirIqLogo';
-import { useChampionProfile } from '../lib/useChampionProfile';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -30,6 +31,7 @@ interface NavbarProps {
   onOpenAlerts: () => void;
   onOpenReport: () => void;
   onOpenShare: () => void;
+  onOpenSound?: () => void;
   onRefresh: () => void;
   isRefreshing: boolean;
   isLocating?: boolean;
@@ -49,6 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAlerts,
   onOpenReport,
   onOpenShare,
+  onOpenSound,
   onRefresh,
   isRefreshing,
   isLocating,
@@ -60,20 +63,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   >([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
-  const { profile } = useChampionProfile();
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
       if (
         searchRef.current &&
-        !searchRef.current.contains(e.target as Node) &&
+        !searchRef.current.contains(target) &&
         mobileSearchRef.current &&
-        !mobileSearchRef.current.contains(e.target as Node)
+        !mobileSearchRef.current.contains(target)
       ) {
         setShowDropdown(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
+        setShowMobileMenu(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -111,7 +119,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'forecast', label: 'AQI Forecast', icon: 'Calendar' },
     { id: 'comparison', label: 'Compare Cities', icon: 'Layers' },
     { id: 'health', label: 'Health & Safety', icon: 'HeartPulse' },
-    { id: 'champion', label: 'Champion Rewards', icon: 'Award' },
   ];
 
   return (
@@ -127,10 +134,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <AirIqBrandBadge />
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-lg sm:text-xl font-black tracking-tight bg-gradient-to-r from-sky-400 via-indigo-200 to-emerald-300 light:from-sky-600 light:to-indigo-700 bg-clip-text text-transparent">
+                <span className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-sky-400 via-indigo-200 to-emerald-300 light:from-sky-600 light:to-indigo-700 bg-clip-text text-transparent">
                   AirIQ
                 </span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400" title="Live Telemetry Synchronized" />
               </div>
               <p className="text-[9px] sm:text-[10px] uppercase font-mono tracking-widest text-slate-400 light:text-slate-500 hidden sm:block">
                 Atmospheric Intelligence
@@ -201,13 +207,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Controls & Actions */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5">
+          <div className="flex items-center gap-1 sm:gap-2">
             {/* Mobile Search Toggle Button */}
             <button
               onClick={() => setShowMobileSearch(!showMobileSearch)}
               title="Search Location"
               aria-label="Toggle Mobile Search"
-              className={`p-2 rounded-xl border md:hidden transition-colors flex items-center justify-center min-w-[36px] min-h-[36px] ${
+              className={`p-2 rounded-xl border md:hidden transition-colors flex items-center justify-center min-w-[38px] min-h-[38px] touch-manipulation ${
                 showMobileSearch
                   ? 'bg-sky-500/20 text-sky-400 border-sky-500/40'
                   : 'bg-slate-900 light:bg-slate-100 text-slate-300 light:text-slate-700 border-slate-800 light:border-slate-300'
@@ -217,10 +223,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {/* Standard Toggle (EPA vs CPCB) */}
-            <div className="flex items-center p-0.5 rounded-lg bg-slate-900 light:bg-slate-100 border border-slate-800 light:border-slate-200 text-xs">
+            <div className="flex items-center p-0.5 rounded-xl bg-slate-900 light:bg-slate-100 border border-slate-800 light:border-slate-200 text-xs">
               <button
                 onClick={() => setStandard('US_EPA')}
-                className={`px-2 sm:px-2.5 py-1 rounded-md font-bold text-[10px] sm:text-[11px] transition-all ${
+                className={`px-2 sm:px-2.5 py-1.5 rounded-lg font-bold text-[10px] sm:text-[11px] transition-all min-h-[32px] touch-manipulation ${
                   standard === 'US_EPA'
                     ? 'bg-sky-500 text-white shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800'
@@ -231,7 +237,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
               <button
                 onClick={() => setStandard('INDIA_CPCB')}
-                className={`px-2 sm:px-2.5 py-1 rounded-md font-bold text-[10px] sm:text-[11px] transition-all ${
+                className={`px-2 sm:px-2.5 py-1.5 rounded-lg font-bold text-[10px] sm:text-[11px] transition-all min-h-[32px] touch-manipulation ${
                   standard === 'INDIA_CPCB'
                     ? 'bg-amber-500 text-slate-950 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800'
@@ -242,77 +248,62 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
 
-            {/* Clean Air Champion Profile Button */}
-            <button
-              onClick={() => setActiveTab('champion')}
-              title={`Clean Air Champion: ${profile.rankTier} (Level ${profile.level})`}
-              aria-label="Clean Air Champion Rewards & Profile"
-              className={`px-2 sm:px-2.5 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 min-h-[36px] touch-manipulation ${
-                activeTab === 'champion'
-                  ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
-                  : 'bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 border-slate-800 light:border-slate-300 text-slate-300 light:text-slate-700'
-              }`}
-            >
-              <span className="text-sm sm:text-base leading-none">{profile.avatar}</span>
-              <div className="hidden sm:flex flex-col text-left">
-                <span className="text-[10px] font-bold tracking-tight text-amber-400 leading-none">
-                  Lvl {profile.level}
-                </span>
-                <span className="text-[9px] font-mono text-slate-400 light:text-slate-500 leading-none mt-0.5">
-                  {profile.xp} XP · 🔥{profile.currentStreak}d
-                </span>
-              </div>
-              <Award className="w-3.5 h-3.5 text-amber-400 sm:hidden" />
-            </button>
-
             {/* AI Assistant Button */}
             <button
               onClick={onOpenAiAssistant}
               title="AirIQ AI Assistant (Gemini)"
               aria-label="Open AI Assistant"
-              className="p-2 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold min-w-[36px] min-h-[36px]"
+              className="p-2 sm:px-3 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold min-w-[38px] min-h-[38px] touch-manipulation"
             >
               <Bot className="w-4 h-4" />
               <span className="hidden lg:inline">AI Intel</span>
             </button>
 
-            {/* Smart Alerts */}
+            {/* Desktop Direct Buttons: Alerts, Report, Share, Refresh */}
             <button
               onClick={onOpenAlerts}
               title="Configure Smart AQI Alerts"
               aria-label="Configure Smart AQI Alerts"
-              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors flex items-center justify-center min-w-[36px] min-h-[36px]"
+              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors hidden sm:flex items-center justify-center min-w-[38px] min-h-[38px] touch-manipulation"
             >
               <Bell className="w-4 h-4" />
             </button>
 
-            {/* Report (visible on tablet+) */}
             <button
               onClick={onOpenReport}
               title="View Impact Report"
               aria-label="View Impact Report"
-              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors hidden sm:flex items-center justify-center min-w-[36px] min-h-[36px]"
+              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors hidden sm:flex items-center justify-center min-w-[38px] min-h-[38px] touch-manipulation"
             >
               <FileText className="w-4 h-4" />
             </button>
 
-            {/* Share (visible on tablet+) */}
+            {onOpenSound && (
+              <button
+                onClick={onOpenSound}
+                title="Atmospheric Soundscape"
+                aria-label="Atmospheric Soundscape"
+                className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors hidden sm:flex items-center justify-center min-w-[38px] min-h-[38px] touch-manipulation"
+              >
+                <Volume2 className="w-4 h-4 text-emerald-400" />
+              </button>
+            )}
+
             <button
               onClick={onOpenShare}
               title="Share Card"
               aria-label="Share Card"
-              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors hidden sm:flex items-center justify-center min-w-[36px] min-h-[36px]"
+              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors hidden sm:flex items-center justify-center min-w-[38px] min-h-[38px] touch-manipulation"
             >
               <Share2 className="w-4 h-4" />
             </button>
 
-            {/* Refresh */}
             <button
               onClick={onRefresh}
               disabled={isRefreshing}
               title="Refresh Data"
               aria-label="Refresh Data"
-              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors flex items-center justify-center min-w-[36px] min-h-[36px]"
+              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors hidden sm:flex items-center justify-center min-w-[38px] min-h-[38px] touch-manipulation"
             >
               <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-sky-400' : ''}`} />
             </button>
@@ -322,10 +313,89 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setDarkMode(!darkMode)}
               title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               aria-label="Toggle Theme"
-              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors flex items-center justify-center min-w-[36px] min-h-[36px]"
+              className="p-2 rounded-xl bg-slate-900 light:bg-slate-100 hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-slate-800 light:border-slate-300 transition-colors flex items-center justify-center min-w-[38px] min-h-[38px] touch-manipulation"
             >
               {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
             </button>
+
+            {/* Mobile More Actions Menu (...) for Phone Viewports */}
+            <div ref={mobileMenuRef} className="relative sm:hidden">
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                title="More Options"
+                aria-label="More Options"
+                className={`p-2 rounded-xl border transition-colors flex items-center justify-center min-w-[38px] min-h-[38px] touch-manipulation ${
+                  showMobileMenu
+                    ? 'bg-sky-500/20 text-sky-400 border-sky-500/40'
+                    : 'bg-slate-900 light:bg-slate-100 text-slate-300 light:text-slate-700 border-slate-800 light:border-slate-300'
+                }`}
+              >
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+
+              {/* Mobile Popover Menu */}
+              {showMobileMenu && (
+                <div className="absolute right-0 top-full mt-2 w-52 bg-slate-900 light:bg-white rounded-2xl border border-slate-700 light:border-slate-200 shadow-2xl p-1.5 z-50 divide-y divide-slate-800 light:divide-slate-100 text-xs animate-in fade-in slide-in-from-top-1">
+                  <div className="py-1">
+                    <button
+                      onClick={() => {
+                        setShowMobileMenu(false);
+                        onOpenAlerts();
+                      }}
+                      className="w-full px-3 py-2.5 rounded-xl text-left flex items-center gap-2.5 text-slate-200 light:text-slate-800 hover:bg-slate-800 light:hover:bg-slate-100 transition-colors"
+                    >
+                      <Bell className="w-4 h-4 text-amber-400" />
+                      <span>Smart Alerts</span>
+                    </button>
+                    {onOpenSound && (
+                      <button
+                        onClick={() => {
+                          setShowMobileMenu(false);
+                          onOpenSound();
+                        }}
+                        className="w-full px-3 py-2.5 rounded-xl text-left flex items-center gap-2.5 text-slate-200 light:text-slate-800 hover:bg-slate-800 light:hover:bg-slate-100 transition-colors"
+                      >
+                        <Volume2 className="w-4 h-4 text-emerald-400" />
+                        <span>Ambient Soundscape</span>
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        setShowMobileMenu(false);
+                        onOpenReport();
+                      }}
+                      className="w-full px-3 py-2.5 rounded-xl text-left flex items-center gap-2.5 text-slate-200 light:text-slate-800 hover:bg-slate-800 light:hover:bg-slate-100 transition-colors"
+                    >
+                      <FileText className="w-4 h-4 text-sky-400" />
+                      <span>Health Report PDF</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowMobileMenu(false);
+                        onOpenShare();
+                      }}
+                      className="w-full px-3 py-2.5 rounded-xl text-left flex items-center gap-2.5 text-slate-200 light:text-slate-800 hover:bg-slate-800 light:hover:bg-slate-100 transition-colors"
+                    >
+                      <Share2 className="w-4 h-4 text-emerald-400" />
+                      <span>Share AQI Card</span>
+                    </button>
+                  </div>
+                  <div className="pt-1">
+                    <button
+                      onClick={() => {
+                        setShowMobileMenu(false);
+                        onRefresh();
+                      }}
+                      disabled={isRefreshing}
+                      className="w-full px-3 py-2.5 rounded-xl text-left flex items-center gap-2.5 text-slate-200 light:text-slate-800 hover:bg-slate-800 light:hover:bg-slate-100 transition-colors"
+                    >
+                      <RefreshCw className={`w-4 h-4 text-sky-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+                      <span>{isRefreshing ? 'Syncing...' : 'Sync Live Stream'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -403,16 +473,16 @@ export const Navbar: React.FC<NavbarProps> = ({
         )}
 
         {/* Desktop Tabs Navigation */}
-        <nav className="hidden md:flex items-center space-x-1 border-t border-slate-800/40 light:border-slate-200/80 py-2 overflow-x-auto no-scrollbar scroll-smooth">
+        <nav className="hidden md:flex space-x-1 border-t border-slate-800/40 light:border-slate-200/80 py-2">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap touch-manipulation active:scale-95 ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 ${
                   isActive
-                    ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30 font-bold'
+                    ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
                     : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800 hover:bg-slate-900/40'
                 }`}
               >

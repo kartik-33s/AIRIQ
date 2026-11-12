@@ -135,7 +135,7 @@ export const ForecastView: React.FC<ForecastViewProps> = ({ currentLocation, sta
         </div>
 
         {/* Recharts Chart */}
-        <div className="w-full h-64 sm:h-80">
+        <div className="w-full min-w-0 h-64 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={chartData}>
               <defs>

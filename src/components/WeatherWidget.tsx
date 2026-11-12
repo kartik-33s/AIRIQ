@@ -1,5 +1,5 @@
 import React from 'react';
-import { Thermometer, Droplets, Wind, Sun } from 'lucide-react';
+import { Thermometer, Droplets, Wind, Sun, Compass, Gauge } from 'lucide-react';
 
 interface WeatherWidgetProps {
   temperature: number | null;
@@ -16,64 +16,133 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
   uvIndex,
   uvCategory,
 }) => {
+  // Approximate feels like temperature based on humidity
+  const feelsLike =
+    temperature !== null
+      ? humidity !== null && humidity > 60
+        ? Math.round(temperature + (humidity - 60) * 0.1)
+        : Math.round(temperature)
+      : null;
+
+  // Derive wind force description (Beaufort scale approximation)
+  const getWindForce = (speed: number | null) => {
+    if (speed === null) return 'Nominal';
+    if (speed < 5) return 'Calm';
+    if (speed < 15) return 'Light Breeze';
+    if (speed < 30) return 'Moderate Breeze';
+    if (speed < 50) return 'Strong Breeze';
+    return 'Gale Force';
+  };
+
+  // Derive air comfort
+  const getHumidityComfort = (hum: number | null) => {
+    if (hum === null) return 'Nominal';
+    if (hum < 30) return 'Arid Dry';
+    if (hum <= 60) return 'Optimal Comfort';
+    if (hum <= 80) return 'Humid Air';
+    return 'Saturated';
+  };
+
   return (
-    <div className={`grid ${uvIndex !== undefined ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'} gap-3 p-4 bg-slate-900/60 light:bg-slate-50 rounded-xl border border-slate-800 light:border-slate-200`}>
-      <div className="flex items-center gap-3">
-        <div className="p-2.5 rounded-lg bg-orange-500/10 text-orange-400">
-          <Thermometer className="w-5 h-5" />
-        </div>
-        <div>
-          <span className="text-xs text-slate-400 light:text-slate-500 block">Temperature</span>
-          <span className="text-base font-bold text-slate-100 light:text-slate-900">
-            {temperature !== null ? `${Math.round(temperature)}°C` : 'N/A'}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <div className="p-2.5 rounded-lg bg-sky-500/10 text-sky-400">
-          <Droplets className="w-5 h-5" />
-        </div>
-        <div>
-          <span className="text-xs text-slate-400 light:text-slate-500 block">Humidity</span>
-          <span className="text-base font-bold text-slate-100 light:text-slate-900">
-            {humidity !== null ? `${Math.round(humidity)}%` : 'N/A'}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <div className="p-2.5 rounded-lg bg-teal-500/10 text-teal-400">
-          <Wind className="w-5 h-5" />
-        </div>
-        <div>
-          <span className="text-xs text-slate-400 light:text-slate-500 block">Wind Speed</span>
-          <span className="text-base font-bold text-slate-100 light:text-slate-900">
-            {windSpeed !== null ? `${Math.round(windSpeed)} km/h` : 'N/A'}
-          </span>
-        </div>
-      </div>
-
-      {uvIndex !== undefined && (
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-400">
-            <Sun className="w-5 h-5" />
+    <div className="p-5 sm:p-6 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-xl backdrop-blur-xl space-y-4">
+      {/* Title Header */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-800/80 light:border-slate-200/80">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 rounded-xl bg-sky-500/10 text-sky-400">
+            <Compass className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 light:text-slate-500 block">UV Index</span>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-base font-bold text-slate-100 light:text-slate-900 font-mono">
-                {uvIndex !== null ? uvIndex.toFixed(1) : 'N/A'}
-              </span>
-              {uvCategory && (
-                <span className="text-[10px] font-semibold text-amber-400">
-                  {uvCategory}
-                </span>
-              )}
-            </div>
+            <h3 className="text-sm font-bold text-slate-100 light:text-slate-900">
+              Atmospheric Dynamics & Microclimate
+            </h3>
+            <span className="text-[10px] text-slate-400 light:text-slate-500 block">
+              Surface meteorological parameters influencing aerosol dispersion
+            </span>
           </div>
         </div>
-      )}
+        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700">
+          SURFACE VECTORS
+        </span>
+      </div>
+
+      {/* Grid of Microclimate Dynamics */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {/* Metric 1: Temperature */}
+        <div className="p-3.5 rounded-2xl bg-slate-800/40 light:bg-slate-50 border border-slate-800 light:border-slate-200/80 space-y-1">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-[11px] font-medium">Ambient Temp</span>
+            <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
+              <Thermometer className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-black text-slate-100 light:text-slate-900 tabular-nums">
+              {temperature !== null ? `${Math.round(temperature)}°` : 'N/A'}
+            </span>
+            <span className="text-xs text-slate-400">C</span>
+          </div>
+          <span className="text-[10px] text-slate-400 light:text-slate-500 block">
+            Feels like {feelsLike !== null ? `${feelsLike}°C` : 'N/A'}
+          </span>
+        </div>
+
+        {/* Metric 2: Relative Humidity */}
+        <div className="p-3.5 rounded-2xl bg-slate-800/40 light:bg-slate-50 border border-slate-800 light:border-slate-200/80 space-y-1">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-[11px] font-medium">Air Moisture</span>
+            <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400">
+              <Droplets className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-black text-slate-100 light:text-slate-900 tabular-nums">
+              {humidity !== null ? `${Math.round(humidity)}%` : 'N/A'}
+            </span>
+            <span className="text-xs text-slate-400">RH</span>
+          </div>
+          <span className="text-[10px] text-slate-400 light:text-slate-500 block">
+            {getHumidityComfort(humidity)}
+          </span>
+        </div>
+
+        {/* Metric 3: Wind Vector Velocity */}
+        <div className="p-3.5 rounded-2xl bg-slate-800/40 light:bg-slate-50 border border-slate-800 light:border-slate-200/80 space-y-1">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-[11px] font-medium">Wind Dispersion</span>
+            <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
+              <Wind className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-black text-slate-100 light:text-slate-900 tabular-nums">
+              {windSpeed !== null ? `${Math.round(windSpeed)}` : 'N/A'}
+            </span>
+            <span className="text-xs text-slate-400">km/h</span>
+          </div>
+          <span className="text-[10px] text-slate-400 light:text-slate-500 block">
+            {getWindForce(windSpeed)}
+          </span>
+        </div>
+
+        {/* Metric 4: Solar UV Radiation */}
+        <div className="p-3.5 rounded-2xl bg-slate-800/40 light:bg-slate-50 border border-slate-800 light:border-slate-200/80 space-y-1">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-[11px] font-medium">Solar Radiance</span>
+            <div className="p-1.5 rounded-lg bg-yellow-500/10 text-yellow-400">
+              <Sun className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-black text-slate-100 light:text-slate-900 tabular-nums">
+              {uvIndex !== undefined && uvIndex !== null ? uvIndex.toFixed(1) : 'N/A'}
+            </span>
+            <span className="text-xs text-slate-400">UVI</span>
+          </div>
+          <span className="text-[10px] text-slate-400 light:text-slate-500 block">
+            {uvCategory || 'Moderate Risk'}
+          </span>
+        </div>
+      </div>
     </div>
   );
 };

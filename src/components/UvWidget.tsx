@@ -81,7 +81,7 @@ export const UvWidget: React.FC<UvWidgetProps> = ({ uv: initialUv, lat, lng, cit
   ];
 
   return (
-    <div className="p-5 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-sm transition-all space-y-4">
+    <div className="p-5 sm:p-6 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-xl backdrop-blur-xl transition-all space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="space-y-0.5">
