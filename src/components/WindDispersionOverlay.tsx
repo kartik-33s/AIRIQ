@@ -125,8 +125,8 @@ export const WindDispersionOverlay: React.FC<WindDispersionOverlayProps> = ({
                 </svg>
               </div>
               <span style="
-                background: rgba(15, 23, 42, 0.85);
-                color: #e2e8f0;
+                background: rgba(10, 10, 10, 0.88);
+                color: #e5e5e5;
                 font-size: 9px;
                 font-weight: 700;
                 padding: 1px 5px;

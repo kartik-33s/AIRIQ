@@ -70,7 +70,7 @@ export const PollutantCard: React.FC<PollutantCardProps> = ({
     : 0;
 
   return (
-    <div className="relative flex flex-col justify-between p-5 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-xl backdrop-blur-xl hover:border-slate-700 light:hover:border-slate-300 transition-all duration-200 group overflow-hidden">
+    <div className="relative flex flex-col justify-between p-4 sm:p-5 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-xl backdrop-blur-xl hover:border-slate-700 light:hover:border-slate-300 transition-all duration-200 group overflow-hidden">
       {/* Subtle top indicator bar */}
       <div
         className="absolute top-0 left-0 right-0 h-1 transition-all"
@@ -80,8 +80,8 @@ export const PollutantCard: React.FC<PollutantCardProps> = ({
       {/* Top Header */}
       <div>
         <div className="flex items-start justify-between gap-2">
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
               <h4 className="text-xl font-black text-slate-100 light:text-slate-900 tracking-tight">
                 {name}
               </h4>
@@ -89,7 +89,7 @@ export const PollutantCard: React.FC<PollutantCardProps> = ({
                 {unit}
               </span>
             </div>
-            <p className="text-xs text-slate-400 light:text-slate-500 font-medium mt-0.5">
+            <p className="text-xs text-slate-400 light:text-slate-500 font-medium mt-0.5 break-words">
               {chemicalName}
             </p>
           </div>

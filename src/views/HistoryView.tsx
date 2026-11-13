@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { LocationData, HistoryData, AqiStandard } from '../types/aqi';
 import { getAqiCategory, formatRelativeTime } from '../lib/aqi';
+import { Button } from '@/components/ui/button';
 
 interface HistoryViewProps {
   currentLocation: LocationData | null;
@@ -67,18 +68,19 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
 
   if (error && !historyData) {
     return (
-      <div className="max-w-xl mx-auto my-12 p-6 bg-slate-900 light:bg-white rounded-2xl border border-rose-500/30 text-center space-y-4">
+      <div className="max-w-xl mx-3 sm:mx-auto my-12 p-5 sm:p-6 bg-slate-900 light:bg-white rounded-2xl border border-rose-500/30 text-center space-y-4">
         <AlertOctagon className="w-12 h-12 text-rose-500 mx-auto" />
         <h3 className="text-lg font-bold text-slate-100 light:text-slate-900">
           Historical Telemetry Unavailable
         </h3>
         <p className="text-xs text-slate-400 light:text-slate-600 leading-relaxed">{error}</p>
-        <button
+        <Button
+          type="button"
           onClick={() => fetchHistory(days)}
-          className="px-4 py-2 rounded-xl bg-sky-500 text-white font-semibold text-xs hover:bg-sky-600 transition-colors inline-flex items-center gap-2"
+          className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-sky-500 text-white font-semibold text-xs hover:bg-sky-600 gap-2 min-h-[44px] h-auto touch-manipulation"
         >
           <RefreshCw className="w-4 h-4" /> Retry Query
-        </button>
+        </Button>
       </div>
     );
   }
@@ -101,12 +103,12 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
   const isWorsening = (historyData?.periodChangePct ?? 0) > 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-6 space-y-6">
       {/* Header and Filter Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800 light:border-slate-200">
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-sky-400" />
+            <TrendingUp className="w-6 h-6 text-sky-400 shrink-0" />
             <h2 className="text-xl sm:text-2xl font-black text-slate-100 light:text-slate-900 tracking-tight">
               Historical Pollution Tracker
             </h2>
@@ -120,8 +122,9 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
         {/* Range Buttons */}
         <div className="flex items-center gap-1.5 bg-slate-900 light:bg-slate-100 p-1 rounded-xl border border-slate-800 light:border-slate-300 text-xs w-full sm:w-auto">
           <button
+            type="button"
             onClick={() => setDays(7)}
-            className={`flex-1 sm:flex-none px-3 py-2 rounded-lg font-semibold transition-all min-h-[38px] touch-manipulation text-center ${
+            className={`flex-1 sm:flex-none px-3 py-2 rounded-lg font-semibold transition-all min-h-[42px] touch-manipulation text-center whitespace-nowrap ${
               days === 7
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800'
@@ -130,8 +133,9 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
             <span className="hidden sm:inline">Last </span>7 Days
           </button>
           <button
+            type="button"
             onClick={() => setDays(30)}
-            className={`flex-1 sm:flex-none px-3 py-2 rounded-lg font-semibold transition-all min-h-[38px] touch-manipulation text-center ${
+            className={`flex-1 sm:flex-none px-3 py-2 rounded-lg font-semibold transition-all min-h-[42px] touch-manipulation text-center whitespace-nowrap ${
               days === 30
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800'
@@ -140,8 +144,9 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
             <span className="hidden sm:inline">Last </span>30 Days
           </button>
           <button
+            type="button"
             onClick={() => setDays(90)}
-            className={`flex-1 sm:flex-none px-3 py-2 rounded-lg font-semibold transition-all min-h-[38px] touch-manipulation text-center ${
+            className={`flex-1 sm:flex-none px-3 py-2 rounded-lg font-semibold transition-all min-h-[42px] touch-manipulation text-center whitespace-nowrap ${
               days === 90
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 light:hover:text-slate-800'
@@ -155,10 +160,10 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
       {/* Metric Change Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Period Trend Card */}
-        <div className="p-4 rounded-xl bg-slate-900/70 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-xs text-slate-400 block font-medium">Period-over-Period Trend</span>
-            <div className="flex items-center gap-2 mt-1">
+        <div className="min-w-0 p-4 rounded-xl bg-slate-900/70 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <span className="text-xs text-slate-400 block font-medium truncate">Period-over-Period Trend</span>
+            <div className="flex flex-wrap items-baseline gap-2 mt-1">
               <span
                 className={`text-2xl font-black tabular-nums ${
                   isWorsening ? 'text-rose-400' : 'text-emerald-400'
@@ -174,7 +179,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
             </div>
           </div>
           <div
-            className={`p-3 rounded-xl ${
+            className={`p-3 rounded-xl shrink-0 ${
               isWorsening ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'
             }`}
           >
@@ -183,10 +188,10 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
         </div>
 
         {/* Current vs Previous Average */}
-        <div className="p-4 rounded-xl bg-slate-900/70 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-xs text-slate-400 block font-medium">Average Period AQI</span>
-            <div className="flex items-baseline gap-2 mt-1">
+        <div className="min-w-0 p-4 rounded-xl bg-slate-900/70 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <span className="text-xs text-slate-400 block font-medium truncate">Average Period AQI</span>
+            <div className="flex flex-wrap items-baseline gap-2 mt-1">
               <span className="text-2xl font-black text-slate-100 light:text-slate-900 tabular-nums">
                 {historyData?.currentPeriodAvg ?? 'N/A'}
               </span>
@@ -195,23 +200,23 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
               </span>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-sky-500/10 text-sky-400">
+          <div className="p-3 rounded-xl bg-sky-500/10 text-sky-400 shrink-0">
             <Calendar className="w-5 h-5" />
           </div>
         </div>
 
         {/* Anomaly Spikes Detected */}
-        <div className="p-4 rounded-xl bg-slate-900/70 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-xs text-slate-400 block font-medium">Detected Pollution Spikes</span>
-            <div className="flex items-baseline gap-2 mt-1">
+        <div className="min-w-0 p-4 rounded-xl bg-slate-900/70 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <span className="text-xs text-slate-400 block font-medium truncate">Detected Pollution Spikes</span>
+            <div className="flex flex-wrap items-baseline gap-2 mt-1">
               <span className="text-2xl font-black text-amber-400 tabular-nums">
                 {historyData?.spikes.length ?? 0}
               </span>
               <span className="text-xs text-slate-400">(&gt; Mean + 2σ)</span>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+          <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400 shrink-0">
             <AlertOctagon className="w-5 h-5" />
           </div>
         </div>
@@ -221,10 +226,11 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
       <div className="p-4 sm:p-6 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-md">
         {/* Chart View Toggle */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <button
+              type="button"
               onClick={() => setActiveChart('aqi')}
-              className={`flex-1 sm:flex-none px-3.5 py-2 rounded-xl text-xs font-bold transition-colors min-h-[38px] touch-manipulation text-center ${
+              className={`flex-1 sm:flex-none px-3.5 py-2 rounded-xl text-xs font-bold transition-colors min-h-[42px] touch-manipulation text-center whitespace-nowrap ${
                 activeChart === 'aqi'
                   ? 'bg-sky-500 text-white shadow-sm'
                   : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
@@ -233,8 +239,9 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
               Daily Overall AQI
             </button>
             <button
+              type="button"
               onClick={() => setActiveChart('particulates')}
-              className={`flex-1 sm:flex-none px-3.5 py-2 rounded-xl text-xs font-bold transition-colors min-h-[38px] touch-manipulation text-center ${
+              className={`flex-1 sm:flex-none px-3.5 py-2 rounded-xl text-xs font-bold transition-colors min-h-[42px] touch-manipulation text-center whitespace-nowrap ${
                 activeChart === 'particulates'
                   ? 'bg-indigo-600 text-white shadow-sm'
                   : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
@@ -245,30 +252,31 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
           </div>
 
           <div className="flex items-center gap-2 text-xs text-slate-400">
-            <span className="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
+            <span className="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
             <span>Red points indicate statistical anomaly spikes (&gt; Mean + 2σ)</span>
           </div>
         </div>
 
         {/* Chart Rendering */}
-        <div className="w-full min-w-0 h-64 sm:h-80">
+        <div className="w-full h-64 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             {activeChart === 'aqi' ? (
-              <AreaChart data={historyData?.daily || []}>
+              <AreaChart data={historyData?.daily || []} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
                 <defs>
                   <linearGradient id="aqiGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.4} />
                     <stop offset="95%" stopColor="#38bdf8" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#262626" opacity={0.45} />
                 <XAxis
                   dataKey="date"
                   tickFormatter={(str) => str.slice(5)}
                   stroke="#94a3b8"
                   fontSize={11}
+                  minTickGap={28}
                 />
-                <YAxis stroke="#94a3b8" fontSize={11} domain={[0, 'auto']} />
+                <YAxis stroke="#94a3b8" fontSize={11} width={40} domain={[0, 'auto']} />
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
@@ -315,7 +323,8 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
                           fill="#ef4444"
                           stroke="#ffffff"
                           strokeWidth={2}
-                          className="animate-ping"
+                          style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+                          className="animate-pulse"
                         />
                       );
                     }
@@ -324,10 +333,10 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
                 />
               </AreaChart>
             ) : (
-              <LineChart data={historyData?.daily || []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
-                <XAxis dataKey="date" tickFormatter={(str) => str.slice(5)} stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
+              <LineChart data={historyData?.daily || []} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#262626" opacity={0.45} />
+                <XAxis dataKey="date" tickFormatter={(str) => str.slice(5)} stroke="#94a3b8" fontSize={11} minTickGap={28} />
+                <YAxis stroke="#94a3b8" fontSize={11} width={40} />
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
@@ -351,9 +360,9 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
         </div>
 
         {/* Data Provenance & Model Label */}
-        <div className="mt-4 pt-3 border-t border-slate-800 light:border-slate-200 flex flex-wrap items-center justify-between text-xs text-slate-400">
+        <div className="mt-4 pt-3 border-t border-slate-800 light:border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
           <span className="flex items-center gap-1.5">
-            <Info className="w-3.5 h-3.5" /> Source: {historyData?.source || 'Open-Meteo ERA5 Reanalysis Archive'}
+            <Info className="w-3.5 h-3.5 shrink-0" /> Source: {historyData?.source || 'Open-Meteo ERA5 Reanalysis Archive'}
           </span>
           <span className="px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 font-semibold">
             {historyData?.badge || 'Modeled estimate'}
@@ -364,7 +373,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
       {/* Spike Detection Breakdown List */}
       <div>
         <h3 className="text-base font-bold text-slate-100 light:text-slate-900 mb-3 flex items-center gap-2">
-          <AlertOctagon className="w-5 h-5 text-rose-500" />
+          <AlertOctagon className="w-5 h-5 text-rose-500 shrink-0" />
           Pollution Spike Events Breakdown ({historyData?.spikes.length || 0})
         </h3>
 
@@ -379,7 +388,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ currentLocation, stand
                 key={idx}
                 className="p-4 rounded-xl bg-slate-900/90 light:bg-white border border-rose-500/30 shadow-sm text-xs space-y-2 hover:border-rose-500 transition-colors"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="font-bold text-rose-400 font-mono">{spike.date}</span>
                   <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 font-semibold text-[10px]">
                     +{spike.deviationMultiplier}σ Above Baseline

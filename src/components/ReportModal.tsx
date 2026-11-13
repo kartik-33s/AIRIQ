@@ -2,6 +2,7 @@ import React from 'react';
 import { Printer, X, FileText, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { LocationData, HistoryData } from '../types/aqi';
 import { getAqiCategory } from '../lib/aqi';
+import { Button } from '@/components/ui/button';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -21,26 +22,28 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, data,
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-4 sm:p-6 my-4 sm:my-8 max-h-[92vh] flex flex-col overflow-hidden">
+      <div className="relative w-full max-w-2xl bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-4 sm:p-6 my-4 sm:my-8 max-h-[92dvh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800 light:border-slate-200 print:hidden">
-          <div className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-sky-400" />
-            <h3 className="font-bold text-slate-100 light:text-slate-900 text-base sm:text-lg">
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-800 light:border-slate-200 print:hidden">
+          <div className="flex items-center gap-2 min-w-0">
+            <FileText className="w-5 h-5 text-sky-400 shrink-0" />
+            <h3 className="font-bold text-slate-100 light:text-slate-900 text-base sm:text-lg truncate">
               Pollution Impact & Health Report
             </h3>
           </div>
-          <div className="flex items-center gap-2">
-            <button
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              type="button"
               onClick={handlePrint}
-              className="py-1.5 px-3 rounded-lg bg-sky-500 hover:bg-sky-600 text-white font-medium text-xs flex items-center gap-1.5 transition-colors touch-manipulation min-h-[36px]"
+              className="py-2 px-3.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white font-medium text-xs gap-1.5 touch-manipulation min-h-[40px] h-auto"
             >
               <Printer className="w-4 h-4" /> <span className="hidden sm:inline">Print / Save PDF</span><span className="sm:hidden">Print</span>
-            </button>
+            </Button>
             <button
+              type="button"
               onClick={onClose}
               aria-label="Close Report"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 light:hover:text-slate-900 touch-manipulation min-w-[36px] min-h-[36px] flex items-center justify-center"
+              className="p-2 rounded-lg text-slate-400 hover:text-slate-100 light:hover:text-slate-900 hover:bg-slate-800/60 light:hover:bg-slate-100 touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
             >
               <X className="w-5 h-5" />
             </button>

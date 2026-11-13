@@ -174,22 +174,22 @@ export const AqiSparkline: React.FC<AqiSparklineProps> = ({
   });
 
   return (
-    <div className="p-5 sm:p-6 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-xl backdrop-blur-xl transition-all space-y-4">
+    <div className="p-4 sm:p-6 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-xl backdrop-blur-xl transition-all space-y-4">
       {/* Header and 24h Summary Statistics */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="space-y-0.5">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400">
+        <div className="space-y-0.5 min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400 shrink-0">
               <Activity className="w-4 h-4" />
             </div>
             <h4 className="text-sm font-bold text-slate-100 light:text-slate-900 flex items-center gap-1.5">
               24-Hour AQI Trend & Fluctuations
             </h4>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 light:bg-slate-100 text-slate-400 light:text-slate-600 border border-slate-700/60 light:border-slate-200">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 light:bg-slate-100 text-slate-400 light:text-slate-600 border border-slate-700/60 light:border-slate-200 shrink-0">
               Last 24h
             </span>
           </div>
-          <p className="text-xs text-slate-400 light:text-slate-500 pl-8">
+          <p className="text-xs text-slate-400 light:text-slate-500 pl-0 sm:pl-8 break-words">
             Hourly continuous atmospheric trajectory for {city}
           </p>
         </div>
@@ -313,7 +313,7 @@ export const AqiSparkline: React.FC<AqiSparklineProps> = ({
                 activeDot={{
                   r: 5,
                   fill: color,
-                  stroke: '#0f172a',
+                  stroke: '#0a0a0a',
                   strokeWidth: 2,
                 }}
                 isAnimationActive={true}
@@ -325,16 +325,16 @@ export const AqiSparkline: React.FC<AqiSparklineProps> = ({
       </div>
 
       {/* Footer Info & Peak Callouts */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-slate-400 light:text-slate-500 pt-1 border-t border-slate-800/60 light:border-slate-100 gap-2">
-        <div className="flex items-center gap-1.5">
-          <Clock className="w-3.5 h-3.5 text-slate-500" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-slate-400 light:text-slate-500 pt-2 border-t border-slate-800/60 light:border-slate-100 gap-2">
+        <div className="flex items-start sm:items-center gap-1.5">
+          <Clock className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5 sm:mt-0" />
           <span>
             24h Progression: Started at <strong className="text-slate-300 light:text-slate-700 font-mono">{firstPointAqi} AQI</strong> ({points[0]?.hour || '24h ago'}), now at{' '}
             <strong className="text-slate-200 light:text-slate-800 font-mono">{currentAqi} AQI</strong>
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {minPoint && (
             <span>
               Best hour: <strong className="text-emerald-400 font-medium">{minPoint.hour}</strong> ({minPoint.aqi} AQI)

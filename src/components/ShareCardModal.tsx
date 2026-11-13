@@ -4,6 +4,7 @@ import { Download, Share2, X, Sparkles, Check, RefreshCw } from 'lucide-react';
 import { LocationData } from '../types/aqi';
 import { getAqiCategory, formatRelativeTime } from '../lib/aqi';
 import { AirIqIcon } from './AirIqLogo';
+import { Button } from '@/components/ui/button';
 
 interface ShareCardModalProps {
   isOpen: boolean;
@@ -65,19 +66,20 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ isOpen, onClose,
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
-      <div className="relative w-full max-w-md bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-4 sm:p-6 overflow-hidden max-h-[92vh] overflow-y-auto">
+      <div className="relative w-full max-w-md bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-4 sm:p-6 overflow-hidden max-h-[92dvh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800 light:border-slate-200">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-sky-400" />
-            <h3 className="font-bold text-slate-100 light:text-slate-900 text-base">
+        <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-800 light:border-slate-200">
+          <div className="flex items-center gap-2 min-w-0">
+            <Sparkles className="w-5 h-5 text-sky-400 shrink-0" />
+            <h3 className="font-bold text-slate-100 light:text-slate-900 text-base truncate">
               Share Air Quality Card
             </h3>
           </div>
           <button
+            type="button"
             onClick={onClose}
             aria-label="Close Share Card"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white light:hover:text-slate-900 touch-manipulation min-w-[36px] min-h-[36px] flex items-center justify-center"
+            className="p-2 rounded-lg text-slate-400 hover:text-white light:hover:text-slate-900 hover:bg-slate-800/60 light:hover:bg-slate-100 touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -107,7 +109,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ isOpen, onClose,
             </p>
 
             {/* Main AQI Section */}
-            <div className="my-4 sm:my-5 p-3.5 sm:p-4 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
+            <div className="my-4 sm:my-5 p-3.5 sm:p-4 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-2">
               <div>
                 <span className="text-[10px] sm:text-xs text-slate-400 block font-medium">AIR QUALITY INDEX</span>
                 <span
@@ -160,21 +162,24 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({ isOpen, onClose,
 
         {/* Action Buttons */}
         <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <button
+          <Button
+            type="button"
             onClick={handleDownload}
             disabled={downloading}
-            className="flex-1 py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-md disabled:opacity-50 min-h-[42px] touch-manipulation"
+            className="flex-1 py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs gap-2 shadow-md disabled:opacity-50 min-h-[44px] h-auto touch-manipulation"
           >
             {downloading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             {downloading ? 'Exporting...' : 'Download PNG Card'}
-          </button>
-          <button
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
             onClick={handleShare}
-            className="py-2.5 px-4 rounded-xl border border-slate-700 light:border-slate-300 text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-100 font-medium text-xs flex items-center justify-center gap-1.5 transition-colors min-h-[42px] touch-manipulation"
+            className="py-2.5 px-4 rounded-xl border border-slate-700 light:border-slate-300 bg-transparent text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-100 font-medium text-xs gap-1.5 min-h-[44px] h-auto touch-manipulation"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
             {copied ? 'Link Copied!' : 'Share'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

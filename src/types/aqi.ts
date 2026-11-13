@@ -2,7 +2,7 @@ import { AqiStandard, AqiCategoryName, AqiCategoryInfo } from '../lib/aqi';
 
 export type { AqiStandard, AqiCategoryName, AqiCategoryInfo };
 
-export type ActiveTab = 'dashboard' | 'map' | '3d' | 'history' | 'forecast' | 'comparison' | 'health' | 'champion';
+export type ActiveTab = 'dashboard' | 'map' | '3d' | 'history' | 'forecast' | 'comparison' | 'health';
 
 export interface SparklinePoint {
   time: string;

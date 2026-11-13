@@ -5,16 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>
       (function() {
-        // Theme initialization
+        // Theme initialization (black dark theme)
         try {
-          var t = localStorage.getItem('airiq_theme');
-          if (t === 'light' || (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-            document.documentElement.classList.remove('dark');
-            document.documentElement.classList.add('light');
-          } else {
-            document.documentElement.classList.remove('light');
-            document.documentElement.classList.add('dark');
-          }
+          localStorage.setItem('airiq_theme', 'dark');
+          document.documentElement.classList.remove('light');
+          document.documentElement.classList.add('dark');
         } catch (e) {}
 
         // Mock Vite HMR WebSocket in preview iframe/cloud proxy environment to silence failed connect errors

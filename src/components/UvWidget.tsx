@@ -81,13 +81,13 @@ export const UvWidget: React.FC<UvWidgetProps> = ({ uv: initialUv, lat, lng, cit
   ];
 
   return (
-    <div className="p-5 sm:p-6 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-xl backdrop-blur-xl transition-all space-y-4">
+    <div className="p-4 sm:p-6 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-xl backdrop-blur-xl transition-all space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="space-y-0.5">
-          <div className="flex items-center gap-2">
+        <div className="space-y-0.5 min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
             <div
-              className="p-1.5 rounded-lg flex items-center justify-center transition-colors"
+              className="p-1.5 rounded-lg flex items-center justify-center transition-colors shrink-0"
               style={{ backgroundColor: `${color}20`, color: color }}
             >
               {isDay ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4 text-indigo-400" />}
@@ -96,7 +96,7 @@ export const UvWidget: React.FC<UvWidgetProps> = ({ uv: initialUv, lat, lng, cit
               Solar UV Index & Radiation
             </h4>
             <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded-full border transition-colors uppercase tracking-wider"
+              className="text-[10px] font-bold px-2 py-0.5 rounded-full border transition-colors uppercase tracking-wider shrink-0"
               style={{
                 backgroundColor: `${color}18`,
                 color: color,
@@ -106,15 +106,15 @@ export const UvWidget: React.FC<UvWidgetProps> = ({ uv: initialUv, lat, lng, cit
               {category}
             </span>
           </div>
-          <p className="text-xs text-slate-400 light:text-slate-500 pl-8">
+          <p className="text-xs text-slate-400 light:text-slate-500 pl-0 sm:pl-8 break-words">
             Real-time solar irradiance & skin exposure risk for {city}
           </p>
         </div>
 
         {/* Big UV Value Callout */}
-        <div className="flex items-center gap-3">
-          <div className="text-right">
-            <div className="flex items-baseline justify-end gap-1">
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="text-left sm:text-right">
+            <div className="flex items-baseline sm:justify-end gap-1">
               <span
                 className="text-2xl sm:text-3xl font-black font-mono tracking-tight"
                 style={{ color }}
@@ -132,11 +132,11 @@ export const UvWidget: React.FC<UvWidgetProps> = ({ uv: initialUv, lat, lng, cit
 
       {/* Segmented UV Scale Bar */}
       <div className="space-y-1.5 pt-1">
-        <div className="grid grid-cols-5 gap-1.5">
+        <div className="grid grid-cols-5 gap-1 sm:gap-1.5">
           {segments.map((seg, idx) => {
             const isActive = idx === activeSegmentIndex;
             return (
-              <div key={seg.label} className="space-y-1">
+              <div key={seg.label} className="space-y-1 min-w-0">
                 <div
                   className={`h-2 rounded-full transition-all duration-300 ${
                     isActive
@@ -148,8 +148,8 @@ export const UvWidget: React.FC<UvWidgetProps> = ({ uv: initialUv, lat, lng, cit
                     borderColor: isActive ? seg.color : 'transparent',
                   }}
                 />
-                <div className="flex justify-between items-center px-0.5 text-[9px] text-slate-400">
-                  <span className={`font-medium ${isActive ? 'font-bold' : ''}`} style={{ color: isActive ? seg.color : undefined }}>
+                <div className="flex justify-between items-center px-0.5 text-[8px] sm:text-[9px] text-slate-400">
+                  <span className={`font-medium truncate ${isActive ? 'font-bold' : ''}`} style={{ color: isActive ? seg.color : undefined }}>
                     {seg.label}
                   </span>
                   <span className="opacity-60 hidden sm:inline font-mono">{seg.range}</span>
@@ -163,57 +163,57 @@ export const UvWidget: React.FC<UvWidgetProps> = ({ uv: initialUv, lat, lng, cit
       {/* Key Telemetry & Health Risk Metrics Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
         {/* Metric 1: Est. Safe Burn Time */}
-        <div className="p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-1">
+        <div className="min-w-0 p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-1">
           <div className="flex items-center gap-1.5 text-slate-400 text-xs">
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-[11px]">Est. Burn Time</span>
+            <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className="text-[11px] truncate">Est. Burn Time</span>
           </div>
-          <div className="text-sm font-bold text-slate-100 light:text-slate-900 font-mono">
+          <div className="text-sm font-bold text-slate-100 light:text-slate-900 font-mono truncate">
             {!isDay || uvValue < 0.1 ? '> 2 hours' : `~${burnTime} mins`}
           </div>
-          <span className="text-[10px] text-slate-400 light:text-slate-500 block">
+          <span className="text-[10px] text-slate-400 light:text-slate-500 block truncate">
             Unprotected skin threshold
           </span>
         </div>
 
         {/* Metric 2: Solar Irradiance */}
-        <div className="p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-1">
+        <div className="min-w-0 p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-1">
           <div className="flex items-center gap-1.5 text-slate-400 text-xs">
-            <Zap className="w-3.5 h-3.5 text-sky-400" />
-            <span className="text-[11px]">Solar Radiation</span>
+            <Zap className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+            <span className="text-[11px] truncate">Solar Radiation</span>
           </div>
-          <div className="text-sm font-bold text-slate-100 light:text-slate-900 font-mono">
+          <div className="text-sm font-bold text-slate-100 light:text-slate-900 font-mono truncate">
             {solarRadiation !== null ? `${solarRadiation} W/m²` : isDay ? 'Moderate' : '0 W/m²'}
           </div>
-          <span className="text-[10px] text-slate-400 light:text-slate-500 block">
+          <span className="text-[10px] text-slate-400 light:text-slate-500 block truncate">
             Direct shortwave flux
           </span>
         </div>
 
         {/* Metric 3: Peak UV Today */}
-        <div className="p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-1">
+        <div className="min-w-0 p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-1">
           <div className="flex items-center gap-1.5 text-slate-400 text-xs">
-            <Flame className="w-3.5 h-3.5 text-rose-400" />
-            <span className="text-[11px]">Peak UV Today</span>
+            <Flame className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+            <span className="text-[11px] truncate">Peak UV Today</span>
           </div>
-          <div className="text-sm font-bold text-slate-100 light:text-slate-900 font-mono">
+          <div className="text-sm font-bold text-slate-100 light:text-slate-900 font-mono truncate">
             {maxUv.toFixed(1)} UV
           </div>
-          <span className="text-[10px] text-slate-400 light:text-slate-500 block">
+          <span className="text-[10px] text-slate-400 light:text-slate-500 block truncate">
             Daily maximum intensity
           </span>
         </div>
 
         {/* Metric 4: Protection Guidance */}
-        <div className="p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-1">
+        <div className="min-w-0 p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-1">
           <div className="flex items-center gap-1.5 text-slate-400 text-xs">
-            <Glasses className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-[11px]">Protection</span>
+            <Glasses className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span className="text-[11px] truncate">Protection</span>
           </div>
-          <div className="text-sm font-bold text-slate-100 light:text-slate-900">
+          <div className="text-sm font-bold text-slate-100 light:text-slate-900 truncate">
             {spf}
           </div>
-          <span className="text-[10px] text-slate-400 light:text-slate-500 block">
+          <span className="text-[10px] text-slate-400 light:text-slate-500 block truncate">
             {uvValue >= 6 ? 'Hat & UV400 glasses' : 'Normal precaution'}
           </span>
         </div>
@@ -231,8 +231,8 @@ export const UvWidget: React.FC<UvWidgetProps> = ({ uv: initialUv, lat, lng, cit
           </div>
         </div>
       ) : (
-        <div className="p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 flex items-start justify-between gap-2.5 text-xs">
-          <div className="flex items-start gap-2 text-slate-300 light:text-slate-600">
+        <div className="p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+          <div className="flex items-start gap-2 text-slate-300 light:text-slate-600 min-w-0">
             <Info className="w-4 h-4 text-sky-400 flex-shrink-0 mt-0.5" />
             <p className="text-[11px] leading-relaxed">
               <strong className="text-slate-200 light:text-slate-800 font-semibold">Sun Safety Advisory: </strong>
@@ -240,8 +240,9 @@ export const UvWidget: React.FC<UvWidgetProps> = ({ uv: initialUv, lat, lng, cit
             </p>
           </div>
           <button
+            type="button"
             onClick={() => setShowHealthModal(!showHealthModal)}
-            className="text-[10px] font-semibold text-sky-400 hover:text-sky-300 whitespace-nowrap self-center flex items-center gap-1 transition-colors"
+            className="text-[11px] font-semibold text-sky-400 hover:text-sky-300 bg-sky-500/10 sm:bg-transparent px-3 py-1.5 sm:px-2 sm:py-1 rounded-lg whitespace-nowrap self-start sm:self-center flex items-center justify-center gap-1 transition-colors min-h-[38px] touch-manipulation shrink-0"
           >
             <span>{showHealthModal ? 'Hide Science' : 'UV & Smog Synergy'}</span>
           </button>

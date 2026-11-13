@@ -10,30 +10,15 @@ import { ForecastView } from './views/ForecastView';
 import { ComparisonView } from './views/ComparisonView';
 import { HealthView } from './views/HealthView';
 import { Atmospheric3DView } from './views/Atmospheric3DView';
-import { ChampionProfileView } from './views/ChampionProfileView';
 import { AiAssistantModal } from './components/AiAssistantModal';
 import { SmartAlertsModal } from './components/SmartAlertsModal';
 import { ReportModal } from './components/ReportModal';
 import { ShareCardModal } from './components/ShareCardModal';
-import { AmbientSoundModal } from './components/AmbientSoundModal';
-import { useAmbientSoundscape } from './lib/useAmbientSoundscape';
+import { GridVignetteBackground } from '@/components/ui/vignette-grid-background';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [standard, setStandard] = useState<AqiStandard>('US_EPA');
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem('airiq_theme');
-      if (saved === 'light') return false;
-      if (saved === 'dark') return true;
-      if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        return false;
-      }
-    } catch {
-      // fallback
-    }
-    return true;
-  });
   const [locationData, setLocationData] = useState<LocationData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
@@ -45,10 +30,6 @@ export default function App() {
   const [isAlertsOpen, setIsAlertsOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
-  const [isSoundOpen, setIsSoundOpen] = useState(false);
-
-  // Sync ambient soundscape engine with live telemetry AQI
-  useAmbientSoundscape(locationData?.aqi);
 
   // Initialize standard from localStorage
   useEffect(() => {
@@ -58,27 +39,17 @@ export default function App() {
     }
   }, []);
 
-  // Update theme class on HTML element & body
+  // Enforce black dark theme on HTML element & body
   useEffect(() => {
     const root = document.documentElement;
-    if (darkMode) {
-      root.classList.remove('light');
-      root.classList.add('dark');
-      document.body.classList.remove('light');
-      document.body.classList.add('dark');
-      try {
-        localStorage.setItem('airiq_theme', 'dark');
-      } catch {}
-    } else {
-      root.classList.remove('dark');
-      root.classList.add('light');
-      document.body.classList.remove('dark');
-      document.body.classList.add('light');
-      try {
-        localStorage.setItem('airiq_theme', 'light');
-      } catch {}
-    }
-  }, [darkMode]);
+    root.classList.remove('light');
+    root.classList.add('dark');
+    document.body.classList.remove('light');
+    document.body.classList.add('dark');
+    try {
+      localStorage.setItem('airiq_theme', 'dark');
+    } catch {}
+  }, []);
 
   // Save standard preference
   const handleSetStandard = (std: AqiStandard) => {
@@ -228,15 +199,13 @@ export default function App() {
   }, [handleUseCurrentLocation]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 light:bg-slate-50 light:text-slate-900 transition-colors">
+    <div className="min-h-screen flex flex-col bg-black text-slate-100">
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         standard={standard}
         setStandard={handleSetStandard}
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
         onSearchCity={(city, coords) => {
           if (coords) {
             fetchLiveAqi({ lat: coords.lat, lng: coords.lng, city });
@@ -249,7 +218,6 @@ export default function App() {
         onOpenAlerts={() => setIsAlertsOpen(true)}
         onOpenReport={() => setIsReportOpen(true)}
         onOpenShare={() => setIsShareOpen(true)}
-        onOpenSound={() => setIsSoundOpen(true)}
         onRefresh={() => {
           if (locationData?.coordinates) {
             fetchLiveAqi(
@@ -270,36 +238,25 @@ export default function App() {
       />
 
       {/* Main Tab View */}
-      <main className="flex-1 pb-16 md:pb-0">
-        {activeTab === 'dashboard' && (
-          <DashboardView
-            data={locationData}
-            loading={loading}
-            error={error}
-            standard={standard}
-            onRefresh={() => {
-              if (locationData?.coordinates) {
-                fetchLiveAqi(
-                  { lat: locationData.coordinates.lat, lng: locationData.coordinates.lng },
-                  true
-                );
-              } else {
-                fetchLiveAqi({ city: locationData?.city || 'Delhi' }, true);
-              }
-            }}
-            isRefreshing={isRefreshing}
-            isLocating={isLocating}
-            onSelectCity={(city) => fetchLiveAqi({ city })}
-            onUseCurrentLocation={handleUseCurrentLocation}
-            onOpenAiAssistant={() => setIsAiOpen(true)}
-            onNavigateToMap={() => setActiveTab('map')}
-            onNavigateTo3D={() => setActiveTab('3d')}
-            onNavigateToChampion={() => setActiveTab('champion')}
-          />
-        )}
-
-        {activeTab === 'champion' && (
-          <ChampionProfileView currentLocation={locationData} standard={standard} />
+      <main
+        className={`relative z-10 isolate flex-1 min-w-0 bg-black ${
+          activeTab === '3d' || activeTab === 'map'
+            ? 'pb-[72px] md:pb-0'
+            : 'pb-20 sm:pb-24 md:pb-14 border-b border-slate-800/80 shadow-[0_24px_60px_rgba(0,0,0,0.8)]'
+        }`}
+      >
+        {activeTab !== '3d' && activeTab !== 'map' && (
+          <div className="pointer-events-none absolute inset-0 z-0 overflow-clip">
+            <GridVignetteBackground
+              size={48}
+              x={50}
+              y={38}
+              horizontalVignetteSize={92}
+              verticalVignetteSize={72}
+              intensity={65}
+              className="sticky inset-auto top-0 inset-x-0 z-0 h-[100dvh] w-full opacity-50"
+            />
+          </div>
         )}
 
         {activeTab === 'map' && (
@@ -324,38 +281,76 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'history' && (
-          <HistoryView currentLocation={locationData} standard={standard} />
-        )}
+        {activeTab !== '3d' && activeTab !== 'map' && (
+          <div className="relative z-10">
+            {activeTab === 'dashboard' && (
+              <DashboardView
+                data={locationData}
+                loading={loading}
+                error={error}
+                standard={standard}
+                onRefresh={() => {
+                  if (locationData?.coordinates) {
+                    fetchLiveAqi(
+                      { lat: locationData.coordinates.lat, lng: locationData.coordinates.lng },
+                      true
+                    );
+                  } else {
+                    fetchLiveAqi({ city: locationData?.city || 'Delhi' }, true);
+                  }
+                }}
+                isRefreshing={isRefreshing}
+                isLocating={isLocating}
+                onSelectCity={(city) => fetchLiveAqi({ city })}
+                onUseCurrentLocation={handleUseCurrentLocation}
+                onOpenAiAssistant={() => setIsAiOpen(true)}
+                onNavigateToMap={() => setActiveTab('map')}
+              />
+            )}
 
-        {activeTab === 'forecast' && (
-          <ForecastView currentLocation={locationData} standard={standard} />
-        )}
+            {activeTab === 'history' && (
+              <HistoryView currentLocation={locationData} standard={standard} />
+            )}
 
-        {activeTab === 'comparison' && (
-          <ComparisonView currentLocation={locationData} standard={standard} />
-        )}
+            {activeTab === 'forecast' && (
+              <ForecastView currentLocation={locationData} standard={standard} />
+            )}
 
-        {activeTab === 'health' && (
-          <HealthView currentLocation={locationData} standard={standard} />
+            {activeTab === 'comparison' && (
+              <ComparisonView currentLocation={locationData} standard={standard} />
+            )}
+
+            {activeTab === 'health' && (
+              <HealthView currentLocation={locationData} standard={standard} />
+            )}
+          </div>
         )}
       </main>
 
-      {/* Footer (hidden on 3D full-bleed viewport) */}
-      {activeTab !== '3d' && <Footer />}
+      {/* Footer (hidden on 3D & Map full-bleed viewports) */}
+      {activeTab !== '3d' && activeTab !== 'map' && (
+        <Footer
+          onSelectTab={setActiveTab}
+          onOpenAiAssistant={() => setIsAiOpen(true)}
+          onOpenReport={() => setIsReportOpen(true)}
+        />
+      )}
 
       {/* Mobile Bottom Navigation */}
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Floating AI Assistant Trigger (Bottom Right Desktop) */}
-      <button
-        onClick={() => setIsAiOpen(true)}
-        aria-label="Ask AI Assistant"
-        className="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-2 px-4 py-3 rounded-full bg-gradient-to-r from-sky-500 via-indigo-600 to-emerald-500 text-white font-bold text-xs shadow-2xl hover:scale-105 active:scale-95 transition-all"
-      >
-        <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-        <span>Ask AirIQ AI</span>
-      </button>
+      {/* Floating AI Assistant Trigger (Bottom Right Desktop, hidden on Map/3D where HUD occupies bottom-right) */}
+      {activeTab !== 'map' && activeTab !== '3d' && (
+        <button
+          type="button"
+          onClick={() => setIsAiOpen(true)}
+          aria-label="Ask AI Assistant"
+          className="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-2 px-4 py-3 rounded-full bg-gradient-to-r from-sky-500 via-indigo-600 to-emerald-500 text-white font-bold text-xs shadow-2xl hover:scale-105 active:scale-95 transition-all min-h-[44px]"
+        >
+          <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+          <span>Ask AirIQ AI</span>
+        </button>
+      )}
 
       {/* Modals */}
       <AiAssistantModal
@@ -381,12 +376,6 @@ export default function App() {
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
         data={locationData}
-      />
-
-      <AmbientSoundModal
-        isOpen={isSoundOpen}
-        onClose={() => setIsSoundOpen(false)}
-        currentLocation={locationData}
       />
     </div>
   );

@@ -1,6 +1,8 @@
 import React from 'react';
 import { AqiCategoryInfo, AqiStandard } from '../lib/aqi';
-import { Wind, ShieldCheck, AlertCircle, Activity, Heart, Eye } from 'lucide-react';
+import { Wind, ShieldCheck, Activity } from 'lucide-react';
+import { BorderBeam } from '@/components/ui/border-beam';
+import { useThemeMode } from '@/lib/utils';
 
 interface AqiGaugeProps {
   aqi: number;
@@ -17,6 +19,7 @@ export const AqiGauge: React.FC<AqiGaugeProps> = ({
   dominant,
   badge,
 }) => {
+  const beamTheme = useThemeMode();
   // Semi-circle gauge (180 degrees)
   const radius = 94;
   const strokeWidth = 14;
@@ -50,7 +53,15 @@ export const AqiGauge: React.FC<AqiGaugeProps> = ({
   ];
 
   return (
-    <div className="relative flex flex-col items-center justify-between p-6 sm:p-7 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-2xl backdrop-blur-xl overflow-hidden h-full group">
+    <BorderBeam
+      size="md"
+      colorVariant="colorful"
+      theme={beamTheme}
+      borderRadius={24}
+      strength={0.85}
+      className="w-full h-full"
+    >
+      <div className="relative flex flex-col items-center justify-between p-4 sm:p-7 bg-slate-900/90 light:bg-white rounded-3xl border border-slate-800/90 light:border-slate-200/90 shadow-2xl backdrop-blur-xl overflow-hidden h-full w-full group">
       {/* Ambient Atmospheric Chromatic Glow */}
       <div
         className="absolute -top-24 -left-24 w-72 h-72 rounded-full opacity-20 pointer-events-none blur-3xl transition-all duration-700"
@@ -62,33 +73,33 @@ export const AqiGauge: React.FC<AqiGaugeProps> = ({
       />
 
       {/* Top Header & Telemetry Origin */}
-      <div className="w-full flex items-center justify-between gap-2 z-10">
-        <div className="flex items-center gap-2">
+      <div className="w-full flex flex-wrap items-center justify-between gap-2 z-10">
+        <div className="flex items-center gap-2 min-w-0">
           <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide border ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide border whitespace-nowrap ${
               badge === 'Measured'
                 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
                 : 'bg-sky-500/10 text-sky-400 border-sky-500/30'
             }`}
           >
             {badge === 'Measured' ? (
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             ) : (
-              <Activity className="w-3.5 h-3.5 text-sky-400" />
+              <Activity className="w-3.5 h-3.5 text-sky-400 shrink-0" />
             )}
             {badge} Telemetry
           </span>
         </div>
 
-        <div className="text-right">
-          <span className="text-[11px] font-mono text-slate-400 light:text-slate-500">
+        <div className="text-right shrink-0">
+          <span className="text-[11px] font-mono text-slate-400 light:text-slate-500 whitespace-nowrap">
             Standard: <strong className="text-slate-200 light:text-slate-800 font-bold">{standard === 'US_EPA' ? 'US EPA' : 'CPCB India'}</strong>
           </span>
         </div>
       </div>
 
       {/* Hero Circular Instrument Arc */}
-      <div className="relative w-72 h-44 my-4 flex items-center justify-center overflow-visible z-10">
+      <div className="relative w-60 sm:w-72 h-36 sm:h-44 my-3 sm:my-4 flex items-center justify-center overflow-visible z-10">
         <svg
           viewBox="0 0 240 135"
           className="w-full h-full overflow-visible"
@@ -170,12 +181,12 @@ export const AqiGauge: React.FC<AqiGaugeProps> = ({
         {/* Center Dynamic Numeric Display */}
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-center">
           <span
-            className="text-6xl sm:text-7xl font-black tracking-tight tabular-nums transition-colors drop-shadow-sm"
+            className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight tabular-nums transition-colors drop-shadow-sm"
             style={{ color: category.color }}
           >
             {aqi}
           </span>
-          <span className="text-[11px] uppercase tracking-widest font-bold text-slate-400 light:text-slate-500 -mt-1">
+          <span className="text-[10px] sm:text-[11px] uppercase tracking-widest font-bold text-slate-400 light:text-slate-500 -mt-1">
             Air Quality Index
           </span>
         </div>
@@ -231,6 +242,7 @@ export const AqiGauge: React.FC<AqiGaugeProps> = ({
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </BorderBeam>
   );
 };

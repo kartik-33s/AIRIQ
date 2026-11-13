@@ -142,12 +142,12 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
   const cityColors = ['#38bdf8', '#10b981', '#f59e0b', '#a855f7', '#ec4899'];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800 light:border-slate-200">
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <Layers className="w-6 h-6 text-sky-400" />
+            <Layers className="w-6 h-6 text-sky-400 shrink-0" />
             <h2 className="text-xl sm:text-2xl font-black text-slate-100 light:text-slate-900 tracking-tight">
               Multi-Location Air Quality Comparison
             </h2>
@@ -163,7 +163,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
             e.preventDefault();
             handleAddCity(addInput);
           }}
-          className="flex items-center gap-2 w-full md:w-auto"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto"
         >
           <input
             type="text"
@@ -171,12 +171,12 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
             onChange={(e) => setAddInput(e.target.value)}
             placeholder="Add city to compare..."
             disabled={selectedCities.length >= 5}
-            className="flex-1 md:w-56 bg-slate-900 light:bg-slate-100 border border-slate-700 light:border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-100 light:text-slate-900 focus:outline-none focus:border-sky-500 disabled:opacity-40"
+            className="flex-1 md:w-56 bg-slate-900 light:bg-slate-100 border border-slate-700 light:border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-100 light:text-slate-900 focus:outline-none focus:border-sky-500 disabled:opacity-40 min-h-[42px]"
           />
           <button
             type="submit"
             disabled={!addInput.trim() || selectedCities.length >= 5}
-            className="px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold text-xs flex items-center gap-1 transition-colors disabled:opacity-40 whitespace-nowrap min-h-[38px] touch-manipulation"
+            className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold text-xs flex items-center justify-center gap-1 transition-colors disabled:opacity-40 whitespace-nowrap min-h-[42px] touch-manipulation shrink-0"
           >
             <Plus className="w-3.5 h-3.5" /> Add
           </button>
@@ -192,14 +192,15 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
       )}
 
       {/* Preset Quick Chips */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar text-xs">
-        <span className="text-slate-500 shrink-0">Quick add:</span>
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 text-xs">
+        <span className="text-slate-500 shrink-0 whitespace-nowrap">Quick add:</span>
         {PRESET_CITIES.filter((c) => !selectedCities.some((sc) => sc.toLowerCase() === c.toLowerCase())).map((c) => (
           <button
+            type="button"
             key={`preset-city-${c}`}
             onClick={() => handleAddCity(c)}
             disabled={selectedCities.length >= 5}
-            className="px-3 py-1.5 rounded-full bg-slate-900 light:bg-slate-100 border border-slate-800 light:border-slate-300 text-slate-300 light:text-slate-700 hover:border-sky-500 transition-colors shrink-0 whitespace-nowrap min-h-[34px] touch-manipulation"
+            className="px-3 py-1.5 rounded-full bg-slate-900 light:bg-slate-100 border border-slate-800 light:border-slate-300 text-slate-300 light:text-slate-700 hover:border-sky-500 transition-colors whitespace-nowrap shrink-0 min-h-[38px] touch-manipulation"
           >
             + {c}
           </button>
@@ -209,15 +210,15 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
       {/* Winner Spotlight Banner: Relatively Cleaner Air */}
       {cleanestLocation && (
         <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900/60 to-emerald-950/40 light:from-emerald-50 light:to-sky-50 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400">
+          <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+            <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0">
               <Trophy className="w-6 h-6" />
             </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">
                 Relatively Cleaner Air Winner
               </span>
-              <h3 className="text-lg font-black text-slate-100 light:text-slate-900">
+              <h3 className="text-base sm:text-lg font-black text-slate-100 light:text-slate-900 break-words">
                 {cleanestLocation.city} (AQI: {cleanestLocation.aqi})
               </h3>
               <p className="text-xs text-slate-300 light:text-slate-600 mt-0.5">
@@ -228,7 +229,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
 
           {/* Difference Multiplier vs worst */}
           {cityDataList.length >= 2 && (
-            <div className="text-right text-xs bg-slate-900/60 light:bg-white p-2.5 rounded-xl border border-slate-800 light:border-slate-200">
+            <div className="w-full sm:w-auto text-left sm:text-right text-xs bg-slate-900/60 light:bg-white p-2.5 rounded-xl border border-slate-800 light:border-slate-200 shrink-0">
               {(() => {
                 const worst = [...cityDataList].sort((a, b) => b.aqi - a.aqi)[0];
                 const multiplier = calculateDifferenceMultiplier(worst.aqi, cleanestLocation.aqi);
@@ -253,23 +254,24 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
           return (
             <div
               key={`city-card-${item.city}-${idx}`}
-              className="p-5 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm flex flex-col justify-between space-y-4"
+              className="min-w-0 p-4 sm:p-5 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm flex flex-col justify-between space-y-4"
             >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h4 className="font-bold text-slate-100 light:text-slate-900 text-base">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-slate-100 light:text-slate-900 text-base truncate">
                     {item.city}
                   </h4>
-                  <span className="text-[11px] text-slate-400 block truncate max-w-[160px]">
+                  <span className="text-[11px] text-slate-400 block truncate">
                     {item.stationName}
                   </span>
                 </div>
                 <button
+                  type="button"
                   onClick={() => handleRemoveCity(selectedCities[idx])}
                   disabled={selectedCities.length <= 2}
                   title={selectedCities.length <= 2 ? 'Minimum 2 locations required for comparison' : `Remove ${item.city}`}
                   aria-label={`Remove ${item.city}`}
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center touch-manipulation"
+                  className="p-2 rounded-lg text-slate-500 hover:text-rose-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center shrink-0 touch-manipulation"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -326,7 +328,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-slate-800 light:border-slate-200 text-[10px] text-slate-500">
+              <div className="pt-2 border-t border-slate-800 light:border-slate-200 text-[10px] text-slate-500 truncate">
                 Source: {item.sourceName} • {item.badge}
               </div>
             </div>
@@ -335,7 +337,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
       </div>
 
       {/* Overlaid Historical Trend Lines Chart */}
-      <div className="p-4 sm:p-6 min-w-0 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-md space-y-4">
+      <div className="p-4 sm:p-6 bg-slate-900/80 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-md space-y-4">
         <div>
           <h3 className="text-base font-bold text-slate-100 light:text-slate-900">
             Comparative 7-Day AQI Trend Overlay
@@ -345,16 +347,16 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({ currentLocation,
           </p>
         </div>
 
-        <div className="w-full min-w-0 h-64 sm:h-80">
+        <div className="w-full h-64 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
-              <XAxis dataKey="date" stroke="#94a3b8" fontSize={11} />
-              <YAxis stroke="#94a3b8" fontSize={11} />
+            <LineChart data={chartData} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#262626" opacity={0.45} />
+              <XAxis dataKey="date" stroke="#a3a3a3" fontSize={11} minTickGap={24} />
+              <YAxis stroke="#a3a3a3" fontSize={11} width={40} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#0f172a',
-                  borderColor: '#334155',
+                  backgroundColor: '#0a0a0a',
+                  borderColor: '#262626',
                   borderRadius: '12px',
                   fontSize: '12px',
                 }}

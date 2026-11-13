@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, BellRing, Plus, Trash2, X, CheckCircle, ShieldAlert } from 'lucide-react';
 import { SmartAlert, LocationData } from '../types/aqi';
+import { Button } from '@/components/ui/button';
 
 interface SmartAlertsModalProps {
   isOpen: boolean;
@@ -109,46 +110,48 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-4 sm:p-6 overflow-hidden max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-lg bg-slate-900 light:bg-white rounded-2xl border border-slate-800 light:border-slate-200 shadow-2xl p-4 sm:p-6 overflow-hidden max-h-[92dvh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800 light:border-slate-200">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400">
+        <div className="flex items-center justify-between gap-2 pb-4 border-b border-slate-800 light:border-slate-200">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 shrink-0">
               <BellRing className="w-5 h-5" />
             </div>
-            <div>
-              <h3 className="font-bold text-slate-100 light:text-slate-900 text-lg">
+            <div className="min-w-0">
+              <h3 className="font-bold text-slate-100 light:text-slate-900 text-base sm:text-lg truncate">
                 Smart AQI Alerts
               </h3>
-              <p className="text-xs text-slate-400 light:text-slate-500">
+              <p className="text-xs text-slate-400 light:text-slate-500 truncate">
                 Custom threshold alerts stored locally in your browser
               </p>
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             aria-label="Close Alerts"
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-100 light:hover:text-slate-900"
+            className="p-2 rounded-xl text-slate-400 hover:text-slate-100 light:hover:text-slate-900 hover:bg-slate-800/60 light:hover:bg-slate-100 min-w-[40px] min-h-[40px] flex items-center justify-center shrink-0 touch-manipulation transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Browser Permission Status */}
-        <div className="mt-4 p-3 rounded-xl bg-slate-800/60 light:bg-slate-100 flex items-center justify-between gap-3 text-xs">
+        <div className="mt-4 p-3 rounded-xl bg-slate-800/60 light:bg-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            <Bell className="w-4 h-4 text-sky-400" />
+            <Bell className="w-4 h-4 text-sky-400 shrink-0" />
             <span className="text-slate-300 light:text-slate-700">
               Desktop Notifications: <strong className="capitalize">{permission}</strong>
             </span>
           </div>
           {permission !== 'granted' && (
-            <button
+            <Button
+              type="button"
               onClick={requestNotificationPermission}
-              className="px-3 py-1 bg-sky-500 hover:bg-sky-600 text-white rounded-lg font-medium text-xs transition-colors"
+              className="w-full sm:w-auto px-3.5 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-lg font-medium text-xs min-h-[40px] h-auto shrink-0 touch-manipulation"
             >
               Enable Notifications
-            </button>
+            </Button>
           )}
         </div>
 
@@ -172,7 +175,7 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
                 value={cityName}
                 onChange={(e) => setCityName(e.target.value)}
                 placeholder="City Name"
-                className="w-full bg-slate-800 light:bg-slate-50 border border-slate-700 light:border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-100 light:text-slate-900 focus:outline-none focus:border-amber-500"
+                className="w-full bg-slate-800 light:bg-slate-50 border border-slate-700 light:border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-100 light:text-slate-900 focus:outline-none focus:border-amber-500 min-h-[42px]"
                 required
               />
             </div>
@@ -183,7 +186,7 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
               <select
                 value={threshold}
                 onChange={(e) => setThreshold(Number(e.target.value))}
-                className="w-full bg-slate-800 light:bg-slate-50 border border-slate-700 light:border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-100 light:text-slate-900 focus:outline-none focus:border-amber-500"
+                className="w-full bg-slate-800 light:bg-slate-50 border border-slate-700 light:border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-100 light:text-slate-900 focus:outline-none focus:border-amber-500 min-h-[42px]"
               >
                 <option value={50}>50 (Above Good)</option>
                 <option value={100}>100 (Above Moderate)</option>
@@ -195,19 +198,20 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
           </div>
 
           <div className="flex flex-col sm:flex-row gap-2">
-            <button
+            <Button
               type="submit"
-              className="flex-1 py-2.5 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm min-h-[40px] touch-manipulation"
+              className="flex-1 py-2.5 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs gap-1.5 shadow-sm min-h-[44px] h-auto touch-manipulation"
             >
               <Plus className="w-4 h-4" /> Add Alert Rule
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="outline"
               onClick={triggerTestAlert}
-              className="py-2.5 px-4 rounded-lg border border-slate-700 light:border-slate-300 text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-100 text-xs font-medium min-h-[40px] touch-manipulation flex items-center justify-center"
+              className="py-2.5 px-4 rounded-lg border border-slate-700 light:border-slate-300 bg-transparent text-slate-300 light:text-slate-700 hover:bg-slate-800 light:hover:bg-slate-100 text-xs font-medium min-h-[44px] h-auto touch-manipulation"
             >
               Test Alert
-            </button>
+            </Button>
           </div>
         </form>
 
@@ -225,11 +229,11 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
               {alerts.map((a) => (
                 <div
                   key={a.id}
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-800 light:border-slate-200 text-xs"
+                  className="flex items-center justify-between gap-2 p-3 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-800 light:border-slate-200 text-xs"
                 >
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     <ShieldAlert
-                      className={`w-4 h-4 ${
+                      className={`w-4 h-4 shrink-0 ${
                         a.threshold >= 200
                           ? 'text-rose-400'
                           : a.threshold >= 100
@@ -237,18 +241,19 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
                           : 'text-sky-400'
                       }`}
                     />
-                    <div>
-                      <strong className="text-slate-200 light:text-slate-900 block">{a.city}</strong>
-                      <span className="text-slate-400 light:text-slate-500">
+                    <div className="min-w-0 flex-1">
+                      <strong className="text-slate-200 light:text-slate-900 block truncate">{a.city}</strong>
+                      <span className="text-slate-400 light:text-slate-500 block truncate">
                         Trigger when AQI exceeds {a.threshold}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <button
+                      type="button"
                       onClick={() => handleToggle(a.id)}
-                      className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-colors ${
+                      className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-colors min-h-[38px] touch-manipulation ${
                         a.enabled
                           ? 'bg-emerald-500/20 text-emerald-400'
                           : 'bg-slate-700 text-slate-400'
@@ -257,9 +262,10 @@ export const SmartAlertsModal: React.FC<SmartAlertsModalProps> = ({
                       {a.enabled ? 'Active' : 'Muted'}
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleDelete(a.id)}
                       aria-label="Delete rule"
-                      className="p-1 text-slate-400 hover:text-rose-400 transition-colors"
+                      className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800/60 transition-colors min-w-[38px] min-h-[38px] flex items-center justify-center touch-manipulation"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>

@@ -81,11 +81,11 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-6 space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="pb-4 border-b border-slate-800 light:border-slate-200">
         <div className="flex items-center gap-2">
-          <HeartPulse className="w-6 h-6 text-rose-400" />
+          <HeartPulse className="w-6 h-6 text-rose-400 shrink-0" />
           <h2 className="text-xl sm:text-2xl font-black text-slate-100 light:text-slate-900 tracking-tight">
             Health & Safety Advisory Dashboard
           </h2>
@@ -97,7 +97,7 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
       </div>
 
       {/* Current Real-Time Activity Recommendations */}
-      <div className="p-6 rounded-2xl bg-slate-900/90 light:bg-white border border-slate-800 light:border-slate-200 shadow-md space-y-5">
+      <div className="p-4 sm:p-6 rounded-2xl bg-slate-900/90 light:bg-white border border-slate-800 light:border-slate-200 shadow-md space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400 block">
@@ -122,17 +122,17 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
         {/* Dynamic Activity Tiles */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
           {/* Walking & Running */}
-          <div className="p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
-            <div className="flex items-center justify-between">
+          <div className="min-w-0 p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
+            <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-slate-200 light:text-slate-800">
                 Walking, Jogging & Running
               </span>
               {currentCategory.level <= 2 ? (
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
               ) : currentCategory.level === 3 ? (
-                <AlertTriangle className="w-4 h-4 text-amber-400" />
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
               ) : (
-                <XCircle className="w-4 h-4 text-rose-400" />
+                <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
               )}
             </div>
             <p className="text-slate-400 light:text-slate-600 leading-relaxed">
@@ -145,13 +145,13 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           </div>
 
           {/* Cycling & Commuting */}
-          <div className="p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
-            <div className="flex items-center justify-between">
+          <div className="min-w-0 p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
+            <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-slate-200 light:text-slate-800">Cycling & Commuting</span>
               {currentCategory.level <= 2 ? (
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
               ) : (
-                <AlertTriangle className="w-4 h-4 text-amber-400" />
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
               )}
             </div>
             <p className="text-slate-400 light:text-slate-600 leading-relaxed">
@@ -164,15 +164,15 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           </div>
 
           {/* Children Playground */}
-          <div className="p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
-            <div className="flex items-center justify-between">
+          <div className="min-w-0 p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
+            <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-slate-200 light:text-slate-800">Children Outdoor Play</span>
               {currentCategory.level === 1 ? (
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
               ) : currentCategory.level <= 3 ? (
-                <AlertTriangle className="w-4 h-4 text-amber-400" />
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
               ) : (
-                <XCircle className="w-4 h-4 text-rose-400" />
+                <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
               )}
             </div>
             <p className="text-slate-400 light:text-slate-600 leading-relaxed">
@@ -185,13 +185,13 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           </div>
 
           {/* Windows & Home Ventilation */}
-          <div className="p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
-            <div className="flex items-center justify-between">
+          <div className="min-w-0 p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
+            <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-slate-200 light:text-slate-800">Natural Ventilation</span>
               {currentCategory.windowOpen ? (
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
               ) : (
-                <XCircle className="w-4 h-4 text-rose-400" />
+                <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
               )}
             </div>
             <p className="text-slate-400 light:text-slate-600 leading-relaxed">
@@ -202,13 +202,13 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           </div>
 
           {/* Mask Recommendations */}
-          <div className="p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
-            <div className="flex items-center justify-between">
+          <div className="min-w-0 p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
+            <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-slate-200 light:text-slate-800">Respirator Mask</span>
               {currentCategory.maskRecommended ? (
-                <AlertOctagon className="w-4 h-4 text-amber-400" />
+                <AlertOctagon className="w-4 h-4 text-amber-400 shrink-0" />
               ) : (
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
               )}
             </div>
             <p className="text-slate-400 light:text-slate-600 leading-relaxed">
@@ -219,13 +219,13 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           </div>
 
           {/* Air Purifiers */}
-          <div className="p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
-            <div className="flex items-center justify-between">
+          <div className="min-w-0 p-4 rounded-xl bg-slate-800/50 light:bg-slate-50 border border-slate-700/50 light:border-slate-200 space-y-2">
+            <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-slate-200 light:text-slate-800">Indoor Air Purifiers</span>
               {currentCategory.level >= 3 ? (
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
               ) : (
-                <Activity className="w-4 h-4 text-slate-400" />
+                <Activity className="w-4 h-4 text-slate-400 shrink-0" />
               )}
             </div>
             <p className="text-slate-400 light:text-slate-600 leading-relaxed">
@@ -238,7 +238,7 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
       </div>
 
       {/* Sensitive & Vulnerable Groups Tabbed Section */}
-      <div className="p-6 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-md space-y-5">
+      <div className="p-4 sm:p-6 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-md space-y-5">
         <div>
           <h3 className="text-base font-bold text-slate-100 light:text-slate-900">
             Dedicated Guidance for High-Risk Groups
@@ -251,8 +251,9 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
         {/* Tab Buttons */}
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar border-b border-slate-800 light:border-slate-200 pb-3 -mx-1 px-1">
           <button
+            type="button"
             onClick={() => setActiveGroup('respiratory')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 min-h-[40px] touch-manipulation whitespace-nowrap active:scale-95 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 min-h-[42px] touch-manipulation whitespace-nowrap ${
               activeGroup === 'respiratory'
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
@@ -261,8 +262,9 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
             <Stethoscope className="w-3.5 h-3.5" /> Asthma & COPD
           </button>
           <button
+            type="button"
             onClick={() => setActiveGroup('cardio')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 min-h-[40px] touch-manipulation whitespace-nowrap active:scale-95 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 min-h-[42px] touch-manipulation whitespace-nowrap ${
               activeGroup === 'cardio'
                 ? 'bg-rose-500 text-white shadow-sm'
                 : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
@@ -271,8 +273,9 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
             <HeartPulse className="w-3.5 h-3.5" /> Cardiovascular Disease
           </button>
           <button
+            type="button"
             onClick={() => setActiveGroup('children')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 min-h-[40px] touch-manipulation whitespace-nowrap active:scale-95 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 min-h-[42px] touch-manipulation whitespace-nowrap ${
               activeGroup === 'children'
                 ? 'bg-amber-500 text-slate-950 shadow-sm'
                 : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
@@ -281,8 +284,9 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
             <Baby className="w-3.5 h-3.5" /> Children & Infants
           </button>
           <button
+            type="button"
             onClick={() => setActiveGroup('elderly')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 min-h-[40px] touch-manipulation whitespace-nowrap active:scale-95 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 min-h-[42px] touch-manipulation whitespace-nowrap ${
               activeGroup === 'elderly'
                 ? 'bg-emerald-500 text-white shadow-sm'
                 : 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 hover:bg-slate-700'
@@ -356,13 +360,13 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
 
       {/* Educational Deep Dive: PM2.5 vs PM10 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-5 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center font-bold">
+        <div className="min-w-0 p-5 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm space-y-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center font-bold shrink-0">
               2.5
             </span>
-            <div>
-              <h4 className="font-bold text-slate-100 light:text-slate-900 text-sm">
+            <div className="min-w-0 flex-1">
+              <h4 className="font-bold text-slate-100 light:text-slate-900 text-sm truncate">
                 PM2.5 (Fine Combustion Particles)
               </h4>
               <span className="text-[10px] text-slate-400 font-mono">Diameter &lt; 2.5 micrometers</span>
@@ -379,13 +383,13 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold">
+        <div className="min-w-0 p-5 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm space-y-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold shrink-0">
               10
             </span>
-            <div>
-              <h4 className="font-bold text-slate-100 light:text-slate-900 text-sm">
+            <div className="min-w-0 flex-1">
+              <h4 className="font-bold text-slate-100 light:text-slate-900 text-sm truncate">
                 PM10 (Respirable Coarse Dust)
               </h4>
               <span className="text-[10px] text-slate-400 font-mono">Diameter &lt; 10 micrometers</span>
@@ -403,7 +407,7 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
       </div>
 
       {/* Category Reference Guide */}
-      <div className="p-6 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm space-y-4">
+      <div className="p-4 sm:p-6 rounded-2xl bg-slate-900/80 light:bg-white border border-slate-800 light:border-slate-200 shadow-sm space-y-4">
         <h3 className="text-base font-bold text-slate-100 light:text-slate-900">
           Official AQI Category Scale & Standard Benchmarks ({standard === 'US_EPA' ? 'US EPA' : 'India CPCB'})
         </h3>
@@ -411,11 +415,11 @@ export const HealthView: React.FC<HealthViewProps> = ({ currentLocation, standar
           {allCategories.map((cat, idx) => (
             <div
               key={idx}
-              className="p-3.5 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-800 light:border-slate-200 space-y-2 text-xs"
+              className="min-w-0 p-3.5 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-800 light:border-slate-200 space-y-2 text-xs"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-bold text-slate-100 light:text-slate-900">{cat.name}</span>
-                <span className={`px-2 py-0.5 rounded-full font-mono text-[10px] border ${cat.bgColor}`}>
+                <span className={`px-2 py-0.5 rounded-full font-mono text-[10px] border shrink-0 ${cat.bgColor}`}>
                   {cat.range}
                 </span>
               </div>

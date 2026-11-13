@@ -27,6 +27,8 @@ interface WindDispersionHudProps {
   onToggleVectorArrows: () => void;
   onSelectPreset: (lat: number, lng: number, name: string) => void;
   activeCityName: string;
+  isExpanded?: boolean;
+  onToggleExpand?: (next: boolean) => void;
 }
 
 export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
@@ -40,13 +42,24 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
   onToggleVectorArrows,
   onSelectPreset,
   activeCityName,
+  isExpanded: controlledExpanded,
+  onToggleExpand,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(() => {
+  const [internalExpanded, setInternalExpanded] = useState(() => {
     if (typeof window !== 'undefined') {
-      return window.innerWidth >= 640;
+      return window.innerWidth >= 1024 && window.innerHeight >= 820;
     }
-    return true;
+    return false;
   });
+
+  const isExpanded = controlledExpanded !== undefined ? controlledExpanded : internalExpanded;
+  const handleToggle = () => {
+    const next = !isExpanded;
+    if (controlledExpanded === undefined) {
+      setInternalExpanded(next);
+    }
+    onToggleExpand?.(next);
+  };
 
   const presets = [
     { name: 'Delhi', lat: 28.6139, lng: 77.209, label: 'Delhi (Stubble Smog Corridor)' },
@@ -61,38 +74,44 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
   const blowTowardDeg = (center.windDirection + 180) % 360;
 
   return (
-    <div className="absolute bottom-16 sm:bottom-6 right-2 sm:right-4 left-2 sm:left-auto w-auto sm:w-96 z-[999] bg-slate-900/95 light:bg-white/95 backdrop-blur-md rounded-2xl border border-slate-700/80 light:border-slate-300 shadow-2xl overflow-hidden transition-all text-xs">
+    <div className="absolute bottom-2.5 sm:bottom-5 right-2.5 sm:right-4 left-2.5 sm:left-auto w-auto sm:w-96 z-[999] bg-slate-900/95 light:bg-white/95 backdrop-blur-md rounded-2xl border border-slate-700/80 light:border-slate-300 shadow-2xl overflow-hidden transition-all text-xs">
       {/* Top Header Bar */}
-      <div
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="p-3 sm:p-3.5 bg-gradient-to-r from-slate-900 via-sky-950/40 to-slate-900 light:from-slate-50 light:to-sky-50 border-b border-slate-800 light:border-slate-200 flex items-center justify-between cursor-pointer select-none touch-manipulation min-h-[44px]"
+      <button
+        type="button"
+        onClick={handleToggle}
+        aria-expanded={isExpanded}
+        className="w-full text-left p-3 sm:p-3.5 bg-gradient-to-r from-slate-900 via-sky-950/40 to-slate-900 light:from-slate-50 light:to-sky-50 border-b border-slate-800 light:border-slate-200 flex items-center justify-between cursor-pointer select-none min-h-[48px] touch-manipulation"
       >
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 min-w-0">
           <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400 shrink-0">
             <Wind className="w-4 h-4" />
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h4 className="font-bold text-slate-100 light:text-slate-900 text-xs">
+              <h4 className="font-bold text-slate-100 light:text-slate-900 text-xs truncate">
                 Wind Vector & Smoke Dispersion
               </h4>
+              <span className="flex h-2 w-2 relative shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+              </span>
             </div>
-            <p className="text-[10px] text-slate-400 light:text-slate-500 truncate max-w-[210px] sm:max-w-none">
+            <p className="text-[10px] text-slate-400 light:text-slate-500 truncate">
               {cardinal} ({center.windDirection}°) at {center.windSpeed} km/h • {activeCityName}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-slate-400 shrink-0">
+        <div className="flex items-center gap-1.5 text-slate-400 shrink-0 ml-2">
           <span className="text-[10px] font-semibold text-sky-400 hidden sm:inline">
             {isExpanded ? 'Collapse' : 'Details'}
           </span>
           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </div>
-      </div>
+      </button>
 
       {isExpanded && (
-        <div className="p-3.5 space-y-3.5 max-h-[52vh] sm:max-h-[calc(100vh-14rem)] overflow-y-auto no-scrollbar">
+        <div className="p-3.5 space-y-3.5 max-h-[44dvh] sm:max-h-[min(56dvh,calc(100dvh-16rem))] overflow-y-auto no-scrollbar">
           {/* Compass Rose & Velocity Banner */}
           <div className="grid grid-cols-12 gap-3 p-3 rounded-xl bg-slate-800/40 light:bg-slate-100 border border-slate-700/40 light:border-slate-200">
             {/* Rotating 3D Compass */}
@@ -146,11 +165,11 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
 
           {/* Transboundary Smoke / Air Mass Origin Card */}
           <div className="p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-1.5">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1">
-                <Flame className="w-3 h-3" /> Transboundary Air Corridor
+                <Flame className="w-3 h-3 shrink-0" /> Transboundary Air Corridor
               </span>
-              <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">
                 {originAnalysis.sourceRegion.split(' ')[0]}
               </span>
             </div>
@@ -165,13 +184,13 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
 
           {/* Stagnant Inversion vs Ventilation Gauge */}
           <div className="p-3 rounded-xl bg-slate-800/40 light:bg-slate-50 border border-slate-700/40 light:border-slate-200 space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <span className="text-slate-400 text-[11px] flex items-center gap-1">
-                <Zap className="w-3.5 h-3.5 text-sky-400" />
+                <Zap className="w-3.5 h-3.5 text-sky-400 shrink-0" />
                 Atmospheric Flushing Index
               </span>
               <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${
                   ventilation.riskLevel === 'Severe Risk'
                     ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
                     : ventilation.riskLevel === 'Caution'
@@ -209,39 +228,42 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
             </span>
             <div className="grid grid-cols-3 gap-1.5 text-[11px]">
               <button
+                type="button"
                 onClick={onToggleWindParticles}
-                className={`py-1.5 px-2 rounded-lg font-semibold border flex items-center justify-center gap-1 transition-colors ${
+                className={`py-2 px-2 rounded-lg font-semibold border flex items-center justify-center gap-1 transition-colors min-h-[38px] touch-manipulation ${
                   showWindParticles
                     ? 'bg-sky-500/20 text-sky-400 border-sky-500/40'
                     : 'bg-slate-800 light:bg-slate-100 text-slate-400 border-slate-700 light:border-slate-200'
                 }`}
               >
-                <Wind className="w-3 h-3" />
-                Streamlines
+                <Wind className="w-3 h-3 shrink-0" />
+                <span className="truncate">Streamlines</span>
               </button>
 
               <button
+                type="button"
                 onClick={onToggleSmokeMode}
-                className={`py-1.5 px-2 rounded-lg font-semibold border flex items-center justify-center gap-1 transition-colors ${
+                className={`py-2 px-2 rounded-lg font-semibold border flex items-center justify-center gap-1 transition-colors min-h-[38px] touch-manipulation ${
                   showSmokeMode
                     ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
                     : 'bg-slate-800 light:bg-slate-100 text-slate-400 border-slate-700 light:border-slate-200'
                 }`}
               >
-                <Flame className="w-3 h-3" />
-                Smoke Plumes
+                <Flame className="w-3 h-3 shrink-0" />
+                <span className="truncate">Smoke</span>
               </button>
 
               <button
+                type="button"
                 onClick={onToggleVectorArrows}
-                className={`py-1.5 px-2 rounded-lg font-semibold border flex items-center justify-center gap-1 transition-colors ${
+                className={`py-2 px-2 rounded-lg font-semibold border flex items-center justify-center gap-1 transition-colors min-h-[38px] touch-manipulation ${
                   showVectorArrows
                     ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
                     : 'bg-slate-800 light:bg-slate-100 text-slate-400 border-slate-700 light:border-slate-200'
                 }`}
               >
-                <Navigation className="w-3 h-3" />
-                Vectors
+                <Navigation className="w-3 h-3 shrink-0" />
+                <span className="truncate">Vectors</span>
               </button>
             </div>
           </div>
@@ -251,12 +273,13 @@ export const WindDispersionHud: React.FC<WindDispersionHudProps> = ({
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
               Explore Known Smog & Breeze Corridors
             </span>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
               {presets.map((p) => (
                 <button
+                  type="button"
                   key={p.name}
                   onClick={() => onSelectPreset(p.lat, p.lng, p.name)}
-                  className={`p-1.5 rounded-lg border text-left transition-colors truncate ${
+                  className={`p-2 rounded-lg border text-left transition-colors truncate min-h-[36px] touch-manipulation ${
                     activeCityName.toLowerCase().includes(p.name.toLowerCase())
                       ? 'bg-sky-500/10 text-sky-400 border-sky-500/30 font-bold'
                       : 'bg-slate-800/40 light:bg-slate-100 text-slate-300 light:text-slate-600 border-slate-700/40 light:border-slate-200 hover:border-slate-500'

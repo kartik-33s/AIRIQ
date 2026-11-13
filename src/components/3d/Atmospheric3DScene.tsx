@@ -265,7 +265,7 @@ export const Atmospheric3DScene: React.FC<Atmospheric3DSceneProps> = ({
     pmremGenerator.dispose();
 
     // 5. Studio Lighting Rig (Warm Key + Cool Fill + Celestial Light)
-    const hemiLight = new THREE.HemisphereLight(0x93c5fd, 0x1e293b, 1.3);
+    const hemiLight = new THREE.HemisphereLight(0xd4d4d4, 0x171717, 1.3);
     scene.add(hemiLight);
 
     const keyLight = new THREE.DirectionalLight(0xfff5ea, 2.5);
@@ -288,13 +288,13 @@ export const Atmospheric3DScene: React.FC<Atmospheric3DSceneProps> = ({
     scene.add(rimLight);
 
     // Dynamic Fog initialized to ambient horizon
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.012);
-    scene.background = new THREE.Color(0x0f172a);
+    scene.fog = new THREE.FogExp2(0x000000, 0.012);
+    scene.background = new THREE.Color(0x000000);
 
     // 6. Ground Radar & Concentric Terrain Grid
     const groundGeo = new THREE.PlaneGeometry(200, 200);
     const groundMat = new THREE.MeshStandardMaterial({
-      color: 0x0c1322,
+      color: 0x080808,
       roughness: 0.85,
       metalness: 0.15,
     });
@@ -340,22 +340,22 @@ export const Atmospheric3DScene: React.FC<Atmospheric3DSceneProps> = ({
 
     // Materials
     const concreteMat = new THREE.MeshStandardMaterial({
-      color: 0x334155,
+      color: 0x262626,
       roughness: 0.85,
       metalness: 0.05,
     });
     const mastMat = new THREE.MeshStandardMaterial({
-      color: 0x94a3b8,
+      color: 0xa3a3a3,
       roughness: 0.25,
       metalness: 0.85,
     });
     const housingMat = new THREE.MeshStandardMaterial({
-      color: 0x1e293b,
+      color: 0x171717,
       roughness: 0.3,
       metalness: 0.75,
     });
     const nephelometerMat = new THREE.MeshStandardMaterial({
-      color: 0x475569,
+      color: 0x404040,
       roughness: 0.2,
       metalness: 0.85,
     });
@@ -631,7 +631,7 @@ export const Atmospheric3DScene: React.FC<Atmospheric3DSceneProps> = ({
     // 9. PROCEDURAL CITY SKYLINE BUILDINGS WITH WINDOWS
     const buildingGroup = new THREE.Group();
     const buildingMat = new THREE.MeshStandardMaterial({
-      color: 0x1e293b,
+      color: 0x141414,
       roughness: 0.6,
       metalness: 0.2,
     });
@@ -825,11 +825,11 @@ export const Atmospheric3DScene: React.FC<Atmospheric3DSceneProps> = ({
       rotorGroup.rotation.y += delta * rotorSpeed;
 
       // 2. Dynamic Fog & Particulate Colors
-      let fogColorHex = 0x0f172a;
+      let fogColorHex = 0x000000;
       if (effectiveAqi <= 50) {
         particleMat.color.setHex(0x60a5fa);
         particleMat.opacity = 0.25;
-        fogColorHex = 0x0f172a;
+        fogColorHex = 0x000000;
         inversionMat.color.setHex(0x38bdf8);
       } else if (effectiveAqi <= 100) {
         particleMat.color.setHex(0xfacc15);
